@@ -13,10 +13,11 @@ Note that commands are case-sensitive.
  - ```EIGVAL```: Find the eigenvalues of a matrix
  - ```TRANSP```: Transpose a matrix
  - ```FFT```: Run a Discrete Fourier Transform on a signal
+ - ```IFFT```: Run an Inverse Fourier Transform on a signal
  - ```INTEGRATE```: Integrate a function
  - ```SUM```: The sum of a vector
  - ```AVG```: The average of a vector
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
-The comma seperates elements in the matrix, and the semicolon seperates rows.
+The comma separates elements in the matrix, and the semicolon seperates rows.

@@ -403,6 +403,23 @@ def fft(x):
         transformed_x[k + N // 2] = even[k] - w * odd[k]
     return transformed_x
 
+def ifft(x):
+    N = len(x)
+
+    if N == 1:
+        return [x[0]]
+
+    transformed_x = [0] * N
+
+    even = ifft(x[:N:2])
+    odd = ifft(x[1:N:2])
+
+    for k in range(N // 2):
+        w = cmath.exp(2j * math.pi * k / N)
+        transformed_x[k] = (even[k] + w * odd[k])/N
+        transformed_x[k + N // 2] = (even[k] - w * odd[k])/N
+    return transformed_x
+
 def pretty_print_matrix(matrix):
     for i in range(len(matrix)):
         if i == 0:
@@ -457,6 +474,10 @@ while True:
         signal = input("SIGNAL(AS VECTOR)>")
         signal = list(map(int, signal.strip('][').split(', ')))
         print(fft(signal))
+    elif cmd == "IFFT":
+        signal = input("SIGNAL(AS VECTOR)>")
+        signal = list(map(complex, signal.strip('][').split(', ')))
+        print(ifft(signal))
     elif cmd == "INTEGRATE":
         expression = input("EXPRESSION TO INTEGRATE>")
         integrate(expression)
