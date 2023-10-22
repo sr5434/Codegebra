@@ -403,21 +403,29 @@ def fft(x):
         transformed_x[k + N // 2] = even[k] - w * odd[k]
     return transformed_x
 
+def pretty_print_matrix(matrix):
+    for i in range(len(matrix)):
+        if i == 0:
+            print(f"[ {str(matrix[0]).replace("[", "").replace("]", "")}")
+        elif i == len(matrix)-1:
+            print(f"  {str(matrix[i]).replace("[", "").replace("]", "")} ]")
+        else:
+            print(f"  {str(matrix[i]).replace("[", "").replace("]", "")}")
 
 while True:
     cmd = input("COMMAND>")
     if cmd == "SOLVE":
         equation = input("EQUATION TO BE SOLVED>")
         solve(equation)
-    if cmd == "DIFF":
+    elif cmd == "DIFF":
         equation = input("EXPRESSION TO BE DIFFERENTIATED>")
         derivative(equation)
-    if cmd == "SCALE":
+    elif cmd == "SCALE":
         vector = input("VECTOR>")
         vector = list(map(int, vector.strip('][').split(', ')))
         scalar = int(input("SCALAR>"))
         print(scale_vector(scalar, vector))
-    if cmd == "DOTPR":
+    elif cmd == "DOTPR":
         vectorA = input("VECTOR A>")
         vectorA = list(map(float, vectorA.strip('][').split(', ')))
 
@@ -425,7 +433,7 @@ while True:
         vectorB = list(map(float, vectorB.strip('][').split(', ')))
 
         print(dot_product(vectorA, vectorB))
-    if cmd == "ADDVEC":
+    elif cmd == "ADDVEC":
         vectorA = input("VECTOR A>")
         vectorA = list(map(float, vectorA.strip('][').split(', ')))
 
@@ -433,21 +441,32 @@ while True:
         vectorB = list(map(float, vectorB.strip('][').split(', ')))
 
         print(blas.saxpy(vectorA, vectorB))
-    if cmd == "EIGVAL":
+    elif cmd == "EIGVAL":
         matrix = input("Matrix>")
         matrix = matrix_parse(matrix)
         eigenvalues = lapack.sgeev(matrix)
         print("EIGENVALUES:")
         for eigenvalue in eigenvalues:
             print(eigenvalue)
-    if cmd == "TRANSP":
+    elif cmd == "TRANSP":
         matrix = input("Matrix>")
         matrix = matrix_parse(matrix)
-        print(transpose(matrix))
-    if cmd == "FFT":
+        matrix = transpose(matrix)
+        pretty_print_matrix(matrix)
+    elif cmd == "FFT":
         signal = input("SIGNAL(AS VECTOR)>")
         signal = list(map(int, signal.strip('][').split(', ')))
         print(fft(signal))
-    if cmd == "INTEGRATE":
+    elif cmd == "INTEGRATE":
         expression = input("EXPRESSION TO INTEGRATE>")
         integrate(expression)
+    elif cmd == "SUM":
+        vector = input("VECTOR>")
+        vector = list(map(int, vector.strip('][').split(', ')))
+        print(sum(vector))
+    elif cmd == "AVG":
+        vector = input("VECTOR>")
+        vector = list(map(int, vector.strip('][').split(', ')))
+        print(sum(vector)/len(vector))
+    else:
+        print("ERROR: UNRECOGNIZED COMMAND")

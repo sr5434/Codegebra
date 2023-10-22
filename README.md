@@ -14,3 +14,5 @@ Note that commands are case-sensitive.
  - ```TRANSP```: Transpose a matrix
  - ```FFT```: Run a Discrete Fourier Transform on a signal
  - ```INTEGRATE```: Integrate a function
+ - ```SUM```: The sum of a vector
+ - ```AVG```: The average of a vector
