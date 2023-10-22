@@ -16,3 +16,7 @@ Note that commands are case-sensitive.
  - ```INTEGRATE```: Integrate a function
  - ```SUM```: The sum of a vector
  - ```AVG```: The average of a vector
+## Matrices
+Matrices are written in the following format:
+```[1, 2, 3;4, 5, 6]```
+The comma seperates elements in the matrix, and the semicolon seperates rows.
