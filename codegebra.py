@@ -2,6 +2,14 @@ import math, cmath
 import re
 from scipy.linalg import lapack
 from scipy.linalg import blas
+import ast
+import operator as op
+import pandas as pd
+
+# supported operators(for safely running eval)
+operators = {ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
+             ast.Div: op.truediv, ast.Pow: op.pow, ast.BitXor: op.xor,
+             ast.USub: op.neg}
 
 pattern = r'-?[0-9.]+\s*=\s*(?:[0-9.]+\s*\*\s*)?[0-9.]+\^\(x-[0-9.]+\)(?:\s*\+\s*[0-9.]+)?'
 
@@ -263,7 +271,7 @@ def derivative(expression):
             new_expression.append("sin(x)")
 
         elif re.findall(r'\d+(\*?)x', term) != []:
-            #Regular slope
+            # Regular slope
             if "*" in term:
                 new_expression.append(term[:-2])
             else:
@@ -311,7 +319,7 @@ def integrate(expression):
             if term == "":
                 new_expression.append("x^2/2")
             else:
-                new_expression.append(f"{int(term)/2}x^2")
+                new_expression.append(f"{int(term) / 2}x^2")
         # Cases that can't be solved by the inverse power rule
         elif term == "log x" or term == "log(x)":
             new_expression.append("x(log(x)-1)")
@@ -350,13 +358,23 @@ def dot_product(vector1, vector2):
 def matrix_parse(matrix):
     matrix = matrix.split(";")
     matrixlist = []
+    def eval_(node):
+        if isinstance(node, ast.Constant):  # <number>
+            return node.value
+        elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+            return operators[type(node.op)](eval_(node.left), eval_(node.right))
+        elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+            return operators[type(node.op)](eval_(node.operand))
+        else:
+            raise TypeError(node)
     for row in matrix:
         if row[0] == "[":
             row = row[1:]
         if row[len(row) - 1] == "]":
             row = row[:len(row) - 1]
         row = "[" + row + "]"
-        row = list(map(int, row.strip('][').split(', ')))
+        row = list(map(lambda x: eval_(ast.parse(x, mode='eval').body), row.strip('][').split(', ')))
+        #row = list(map(lambda x: complex(x) if "j" in x else int(x), row))
         matrixlist.append(row)
     return matrixlist
 
@@ -369,7 +387,6 @@ def verify_square(input_matrix):
     else:
         for row in input_matrix:
             if len(row) != first_row_len:
-                print(row)
                 return False
             else:
                 continue
@@ -403,6 +420,7 @@ def fft(x):
         transformed_x[k + N // 2] = even[k] - w * odd[k]
     return transformed_x
 
+
 def ifft(x):
     N = len(x)
 
@@ -416,18 +434,25 @@ def ifft(x):
 
     for k in range(N // 2):
         w = cmath.exp(2j * math.pi * k / N)
-        transformed_x[k] = (even[k] + w * odd[k])/N
-        transformed_x[k + N // 2] = (even[k] - w * odd[k])/N
+        transformed_x[k] = (even[k] + w * odd[k]) / N
+        transformed_x[k + N // 2] = (even[k] - w * odd[k]) / N
     return transformed_x
+
 
 def pretty_print_matrix(matrix):
     for i in range(len(matrix)):
         if i == 0:
             print(f"[ {str(matrix[0]).replace("[", "").replace("]", "")}")
-        elif i == len(matrix)-1:
+        elif i == len(matrix) - 1:
             print(f"  {str(matrix[i]).replace("[", "").replace("]", "")} ]")
         else:
             print(f"  {str(matrix[i]).replace("[", "").replace("]", "")}")
+
+
+def conjugate(num):
+    new_matrix = [[x.conjugate() if type(x) == complex else x for x in row] for row in matrix]
+    return new_matrix
+
 
 while True:
     cmd = input("COMMAND>")
@@ -488,6 +513,149 @@ while True:
     elif cmd == "AVG":
         vector = input("VECTOR>")
         vector = list(map(int, vector.strip('][').split(', ')))
-        print(sum(vector)/len(vector))
+        print(sum(vector) / len(vector))
+    elif cmd == "WORD":
+        word = input("WORD>")
+        df = pd.read_csv('english Dictionary.csv')
+        rows = df.loc[df['word'] == word]
+        print(f"DEFINITION OF {word}")
+        i = 1
+        for row in rows["def"]:
+            print(row)
+            i += 1
+            print(f"{i}. - {row}")
+    elif cmd == "EXP":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("EXPONENT>")
+        print(cmath.exp(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "SQRT":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("INPUT>")
+        print(cmath.sqrt(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "SIN":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("INPUT>")
+        print(cmath.sin(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "COS":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("INPUT>")
+        print(cmath.cos(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "TAN":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("INPUT>")
+        print(cmath.tan(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "ATAN":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("INPUT>")
+        print(cmath.atan(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "LOG":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("INPUT>")
+        print(cmath.log(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "ABS":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("INPUT>")
+        print(abs(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "DETR":
+        matrix = input("MATRIX>")
+        matrix = matrix_parse(matrix)
+        if verify_square(matrix):
+            if len(matrix) == 2:
+                determinant = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]
+                print(determinant)
+            elif len(matrix) == 3:
+                # aei+bfg+cdh-ceg-bdi-afh
+                determinant = matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0] + \
+                              matrix[0][2] * matrix[1][0] * matrix[2][1] - matrix[0][2] * matrix[1][1] * matrix[2][0] - \
+                              matrix[0][1] * matrix[1][0] * matrix[2][2] - matrix[0][0] * matrix[1][2] * matrix[2][1]
+                print(determinant)
+            else:
+                print("ERROR: CAN ONLY HANDLE 2x2 or 3x3 MATRICES")
+        else:
+            print("ERROR: CAN ONLY HANDLE SQUARE MATRICES")
+    elif cmd == "CONJ":
+        matrix = input("MATRIX>")
+        matrix = matrix_parse(matrix)
+        pretty_print_matrix(conjugate(matrix))
     else:
         print("ERROR: UNRECOGNIZED COMMAND")
