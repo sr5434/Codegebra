@@ -657,5 +657,66 @@ while True:
         matrix = input("MATRIX>")
         matrix = matrix_parse(matrix)
         pretty_print_matrix(conjugate(matrix))
+    elif cmd == "ROUND":
+        number = round(float(input("NUMBER>")))
+        print(number)
+    elif cmd == "EYE":
+        size = input("LENGTH>")
+        id_matrix = []
+        for i in range(int(size)):
+            row = []
+            for q in range(int(size)):
+                if i == q:
+                    row.append(1)
+                else:
+                    row.append(0)
+            id_matrix.append(row)
+        pretty_print_matrix(id_matrix)
+    elif cmd == "EVAL":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("EXPRESSION>")
+        print(eval_(ast.parse(expression, mode='eval').body))
+    elif cmd == "PROD":
+        vector = input("VECTOR>")
+        vector = list(map(int, vector.strip('][').split(', ')))
+        prod = vector[0]
+        for element in vector[1:]:
+            prod = prod * element
+        print(prod)
+    elif cmd == "ELEMENT":
+        number = input("ATOMIC NUMBER>")
+        df = pd.read_csv('elements.csv')
+        row = df.loc[df['AtomicNumber'] == int(number)]
+        print(row['Element'].tolist()[0])
+        print(f"Atomic Mass: {row['AtomicMass'].tolist()[0]}")
+        print(f"Neutrons: {row['NumberofNeutrons'].tolist()[0]}")
+        print(f"Protons: {row['NumberofProtons'].tolist()[0]}")
+        print(f"Electrons: {row['NumberofElectrons'].tolist()[0]}")
+        print(f"Type: {row['Type'].tolist()[0]}")
+        print(f"Radius: {row['AtomicRadius'].tolist()[0]} pm")
+        print(f"Density: {row['Density'].tolist()[0]} g/cm3")
+        if not math.isnan(row['MeltingPoint'].tolist()[0]):
+            print(f"Melts at: {row['MeltingPoint'].tolist()[0]}°K")
+        if not math.isnan(row['BoilingPoint'].tolist()[0]):
+            print(f"Boils at: {row['BoilingPoint'].tolist()[0]}°K")
+    elif cmd == "MOVIE":
+        print("WARNING: DATABASE NOT UPDATED SINCE 2013")
+        title = input("TITLE>")
+        df = pd.read_csv('movies.csv')
+        row = df.loc[df['Movie'] == title]
+        print(f"Studio: {row['LeadStudio'].tolist()[0]}")
+        print(f"Rotten Tomatoes: {row['RottenTomatoes'].tolist()[0]}%")
+        print(f"Genre: {row['Genre'].tolist()[0]}")
+        print(f"Year: {row['Year'].tolist()[0]}")
     else:
         print("ERROR: UNRECOGNIZED COMMAND")

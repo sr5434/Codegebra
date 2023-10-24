@@ -28,7 +28,17 @@ Note that commands are case-sensitive.
  - ```ABS```: Calculate the absolute value of an expression or number
  - ```DETR```: Calculate the determinant of a 2x2 or 3x3 matrix
  - ```CONJ```: Conjugate a  matrix
+ - ```ROUND```: Round a number to the nearest whole number
+ - ```EYE```: Create an identity matrix(a matrix with ones going diagonally and zero everywhere else)
+ - ```EVAL```: Evaluate an expression
+ - ```PROD```: Product of all elements in an array
+ - ```ELEMENT```: Get info about an element in the periodic table(by atomic number)
+ - ```MOVIE```: Get info about a movie(the data source I used had not been updated since 2013)
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
 The comma separates elements in the matrix, and the semicolon seperates rows. Matrix elements can be imaginary, complex, or real numbers. They can also be expressions, which will be simplified at runtime.
+## Data credits
+ - [Movie Data](https://github.com/reisanar/datasets/blob/master/HollywoodMovies.csv)
+ - [Elements Data](https://gist.github.com/GoodmanSciences/c2dd862cd38f21b0ad36b8f96b4bf1ee)
+ - [English Dictionary Data](https://github.com/benjihillard/English-Dictionary-Database)
