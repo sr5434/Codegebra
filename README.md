@@ -34,6 +34,7 @@ Note that commands are case-sensitive.
  - ```PROD```: Product of all elements in an array
  - ```ELEMENT```: Get info about an element in the periodic table(by atomic number)
  - ```MOVIE```: Get info about a movie(the data source I used had not been updated since 2013)
+ - ```INV```: Compute the inverse of a square matrix
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
