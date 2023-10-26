@@ -18,14 +18,16 @@ Note that commands are case-sensitive.
  - ```SUM```: The sum of a vector
  - ```AVG```: The average of a vector
  - ```WORD```: Define a word(similar to Wolfram|Alpha)
- - ```EXP```: Calculate e^x where x is an expression or number
- - ```SQRT```: Calculate the square root of an expression or number
- - ```SIN```: Calculate the sine of an expression or number
- - ```COS```: Calculate the cosine of an expression or number
- - ```TAN```: Calculate the tangent of an expression or number
- - ```ATAN```: Calculate the arc tangent of an expression or number
- - ```LOG```: Calculate the natural logarithm of an expression or number
- - ```ABS```: Calculate the absolute value of an expression or number
+ - ```EXP```: Calculate e^x where x is an expression, vector, matrix, or number
+ - ```SQRT```: Calculate the square root of an expression, vector, matrix, or number
+ - ```SIN```: Calculate the sine of an expression, vector, matrix, or number
+ - ```COS```: Calculate the cosine of an expression, vector, matrix, or number
+ - ```TAN```: Calculate the tangent of an expression, vector, matrix, or number
+ - ```ATAN```: Calculate the arc tangent of an expression, vector, matrix, or number
+ - ```ASIN```: Calculate the arc sine of an expression, vector, matrix, or number
+ - ```ACOS```: Calculate the arc cosine of an expression, vector, matrix, or number
+ - ```LOG```: Calculate the natural logarithm of an expression, vector, matrix, or number
+ - ```ABS```: Calculate the absolute value of an expression, vector, matrix, or number
  - ```DETR```: Calculate the determinant of a 2x2 or 3x3 matrix
  - ```CONJ```: Conjugate a  matrix
  - ```ROUND```: Round a number to the nearest whole number

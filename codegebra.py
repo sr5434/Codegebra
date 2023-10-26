@@ -440,7 +440,8 @@ def ifft(x):
 
 
 def pretty_print_matrix(matrix):
-    matrix = matrix[0].tolist()
+    if type(matrix) != list:
+        matrix = matrix[0].tolist()
     for i in range(len(matrix)):
         if i == 0:
             print(f"[ {str(matrix[0]).replace('[', '').replace(']', '')}")
@@ -553,7 +554,14 @@ while True:
 
 
         expression = input("EXPONENT>")
-        print(cmath.exp(eval_(ast.parse(expression, mode='eval').body)))
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.exp(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.exp(i) for i in j] for j in expression])
+        else:
+            print(cmath.exp(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "SQRT":
         def eval_(node):
             if isinstance(node, ast.Constant):  # <number>
@@ -567,7 +575,14 @@ while True:
 
 
         expression = input("INPUT>")
-        print(cmath.sqrt(eval_(ast.parse(expression, mode='eval').body)))
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.sqrt(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.sqrt(i) for i in j] for j in expression])
+        else:
+            print(cmath.sqrt(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "SIN":
         def eval_(node):
             if isinstance(node, ast.Constant):  # <number>
@@ -581,7 +596,14 @@ while True:
 
 
         expression = input("INPUT>")
-        print(cmath.sin(eval_(ast.parse(expression, mode='eval').body)))
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.sin(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.sin(i) for i in j] for j in expression])
+        else:
+            print(cmath.sin(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "COS":
         def eval_(node):
             if isinstance(node, ast.Constant):  # <number>
@@ -595,7 +617,14 @@ while True:
 
 
         expression = input("INPUT>")
-        print(cmath.cos(eval_(ast.parse(expression, mode='eval').body)))
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.cos(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.cos(i) for i in j] for j in expression])
+        else:
+            print(cmath.cos(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "TAN":
         def eval_(node):
             if isinstance(node, ast.Constant):  # <number>
@@ -609,7 +638,14 @@ while True:
 
 
         expression = input("INPUT>")
-        print(cmath.tan(eval_(ast.parse(expression, mode='eval').body)))
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.tan(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.tan(i) for i in j] for j in expression])
+        else:
+            print(cmath.tan(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ATAN":
         def eval_(node):
             if isinstance(node, ast.Constant):  # <number>
@@ -623,7 +659,56 @@ while True:
 
 
         expression = input("INPUT>")
-        print(cmath.atan(eval_(ast.parse(expression, mode='eval').body)))
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.atan(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.atan(i) for i in j] for j in expression])
+        else:
+            print(cmath.atan(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "ASIN":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.asin(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.asin(i) for i in j] for j in expression])
+        else:
+            print(cmath.asin(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "ACOS":
+        def eval_(node):
+            if isinstance(node, ast.Constant):  # <number>
+                return node.value
+            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+                return operators[type(node.op)](eval_(node.left), eval_(node.right))
+            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+                return operators[type(node.op)](eval_(node.operand))
+            else:
+                raise TypeError(node)
+
+
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.acos(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.acos(i) for i in j] for j in expression])
+        else:
+            print(cmath.acos(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "LOG":
         def eval_(node):
             if isinstance(node, ast.Constant):  # <number>
@@ -637,7 +722,14 @@ while True:
 
 
         expression = input("INPUT>")
-        print(cmath.log(eval_(ast.parse(expression, mode='eval').body)))
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.log(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.log(i) for i in j] for j in expression])
+        else:
+            print(cmath.log(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ABS":
         def eval_(node):
             if isinstance(node, ast.Constant):  # <number>
@@ -651,7 +743,14 @@ while True:
 
 
         expression = input("INPUT>")
-        print(abs(eval_(ast.parse(expression, mode='eval').body)))
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([abs(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[abs(i) for i in j] for j in expression])
+        else:
+            print(abs(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "DETR":
         matrix = input("MATRIX>")
         matrix = matrix_parse(matrix)
@@ -761,14 +860,16 @@ Note that commands are case-sensitive.
  - SUM: The sum of a vector
  - AVG: The average of a vector
  - WORD: Define a word(similar to Wolfram|Alpha)
- - EXP: Calculate e^x where x is an expression or number
- - SQRT: Calculate the square root of an expression or number
- - SIN: Calculate the sine of an expression or number
- - COS: Calculate the cosine of an expression or number
- - TAN: Calculate the tangent of an expression or number
- - ATAN: Calculate the arc tangent of an expression or number
- - LOG: Calculate the natural logarithm of an expression or number
- - ABS: Calculate the absolute value of an expression or number
+ - EXP: Calculate e^x where x is an expression, vector, matrix, or number
+ - SQRT: Calculate the square root of an expression, vector, matrix, or number
+ - SIN: Calculate the sine of an expression, vector, matrix, or number
+ - COS: Calculate the cosine of an expression, vector, matrix, or number
+ - TAN: Calculate the tangent of an expression, vector, matrix, or number
+ - ATAN: Calculate the arc tangent of an expression, vector, matrix, or number
+ - ASIN: Calculate the arc sine of an expression, vector, matrix, or number
+ - ACOS: Calculate the arc cosine of an expression, vector, matrix, or number
+ - LOG: Calculate the natural logarithm of an expression, vector, matrix, or number
+ - ABS: Calculate the absolute value of an expression, vector, matrix, or number
  - DETR: Calculate the determinant of a 2x2 or 3x3 matrix
  - CONJ: Conjugate a  matrix
  - ROUND: Round a number to the nearest whole number
