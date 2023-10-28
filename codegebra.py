@@ -455,6 +455,31 @@ def conjugate(num):
     new_matrix = [[x.conjugate() if type(x) == complex else x for x in row] for row in matrix]
     return new_matrix
 
+
+def eval_(node):
+    if isinstance(node, ast.Constant):  # <number>
+        return node.value
+    elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
+        return operators[type(node.op)](eval_(node.left), eval_(node.right))
+    elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
+        return operators[type(node.op)](eval_(node.operand))
+    else:
+        raise TypeError(node)
+
+def matrix_multiplication(A, B):
+    # Check if the matrices can be multiplied
+    if len(A[0]) != len(B):
+        raise ValueError("Matrix dimensions are not compatible for multiplication")
+
+    result = [[0 for _ in range(len(B[0]))] for _ in range(len(A))]
+
+    for i in range(len(A)):
+        for j in range(len(B[0])):
+            for k in range(len(B)):
+                result[i][j] += A[i][k] * B[k][j]
+
+    return result
+
 ascii_art = """  ______                   __                                __                          
  /      \                 /  |                              /  |                         
 /$$$$$$  |  ______    ____$$ |  ______    ______    ______  $$ |____    ______   ______  
@@ -542,15 +567,7 @@ while True:
             i += 1
             print(f"{i}. - {row}")
     elif cmd == "EXP":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("EXPONENT>")
@@ -563,15 +580,7 @@ while True:
         else:
             print(cmath.exp(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "SQRT":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("INPUT>")
@@ -584,15 +593,7 @@ while True:
         else:
             print(cmath.sqrt(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "SIN":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("INPUT>")
@@ -605,15 +606,7 @@ while True:
         else:
             print(cmath.sin(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "COS":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("INPUT>")
@@ -626,15 +619,7 @@ while True:
         else:
             print(cmath.cos(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "TAN":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("INPUT>")
@@ -647,15 +632,7 @@ while True:
         else:
             print(cmath.tan(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ATAN":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("INPUT>")
@@ -668,15 +645,7 @@ while True:
         else:
             print(cmath.atan(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ASIN":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("INPUT>")
@@ -689,15 +658,7 @@ while True:
         else:
             print(cmath.asin(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ACOS":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("INPUT>")
@@ -710,15 +671,7 @@ while True:
         else:
             print(cmath.acos(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "LOG":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("INPUT>")
@@ -731,15 +684,7 @@ while True:
         else:
             print(cmath.log(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ABS":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("INPUT>")
@@ -788,15 +733,7 @@ while True:
             id_matrix.append(row)
         pretty_print_matrix(id_matrix)
     elif cmd == "EVAL":
-        def eval_(node):
-            if isinstance(node, ast.Constant):  # <number>
-                return node.value
-            elif isinstance(node, ast.BinOp):  # <left> <operator> <right>
-                return operators[type(node.op)](eval_(node.left), eval_(node.right))
-            elif isinstance(node, ast.UnaryOp):  # <operator> <operand> e.g., -1
-                return operators[type(node.op)](eval_(node.operand))
-            else:
-                raise TypeError(node)
+        
 
 
         expression = input("EXPRESSION>")
@@ -839,6 +776,130 @@ while True:
         LU, PIV, _ = lapack.sgetrf(matrix)
         inv_a = lapack.sgetri(LU, PIV)
         pretty_print_matrix(inv_a)
+    elif cmd == "SINH":
+        
+
+
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.sinh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.sinh(i) for i in j] for j in expression])
+        else:
+            print(cmath.sinh(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "COSH":
+        
+
+
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.cosh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.cosh(i) for i in j] for j in expression])
+        else:
+            print(cmath.cosh(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "TANH":
+        
+
+
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.tanh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.tanh(i) for i in j] for j in expression])
+        else:
+            print(cmath.tanh(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "ATANH":
+        
+
+
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.atanh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.atanh(i) for i in j] for j in expression])
+        else:
+            print(cmath.atanh(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "ASINH":
+        
+
+
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.asinh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.asinh(i) for i in j] for j in expression])
+        else:
+            print(cmath.asinh(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "COSH":
+        
+
+
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([cmath.acosh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[cmath.acosh(i) for i in j] for j in expression])
+        else:
+            print(cmath.acosh(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "NORM":
+        # Euclidean Normalization
+        mode = input("1, 2, OR INFINITY NORM>")
+        if mode == "1":
+            vector = input("VECTOR>").strip('][').split(', ')
+            vector = [abs(eval_(ast.parse(i, mode='eval').body)) for i in vector]
+            print(sum(vector))
+        elif mode == "INFINITY":
+            vector = input("VECTOR>").strip('][').split(', ')
+            vector = [abs(eval_(ast.parse(i, mode='eval').body)) for i in vector]
+            print(max(vector))
+        elif mode == "2":
+            vector = input("VECTOR>").strip('][').split(', ')
+            vector = [eval_(ast.parse(i, mode='eval').body) for i in vector]
+            radicand = 0
+            for j in vector:
+                radicand += j ** 2
+            print(math.sqrt(radicand))
+    elif cmd == "MXV":
+        matrix = input("MATRIX>")
+        matrix = matrix_parse(matrix)
+        vector = input("VECTOR>")
+        vector = vector.strip('][').split(', ')
+        vector = [eval_(ast.parse(i, mode='eval').body) for i in vector]
+        nvec = blas.sgemv(1, matrix, vector)
+        print(f"RESULT: {str(nvec)}")
+    elif cmd == "ONES":
+        n = int(input("N>"))
+        m = int(input("M>"))
+        ones = [[1 for i in range(m)] for j in range(n)]
+        pretty_print_matrix(ones)
+    elif cmd == "ZEROES":
+        n = input("N>")
+        m = input("M>")
+        zeroes = [[1 for i in range(m)] for j in range(n)]
+        pretty_print_matrix(zeroes)
+    elif cmd == "UTRI":
+        matrix = input("MATRIX>")
+        matrix = matrix_parse(matrix)
+        new_matrix = [[matrix[i][j] if j >= i else 0 for j in range(len(matrix[i]))] for i in range(len(matrix))]
+        pretty_print_matrix(new_matrix)
+    elif cmd == "LTRI":
+        matrix = input("MATRIX>")
+        matrix = matrix_parse(matrix)
+        new_matrix = [[matrix[i][j] if j <= i else 0 for j in range(len(matrix[i]))] for i in range(len(matrix))]
+        pretty_print_matrix(new_matrix)
     elif cmd == "HELP":
         help_str = """Codegebra
 A "computational intelligence system"(basically a fancy calculator that can tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -868,6 +929,12 @@ Note that commands are case-sensitive.
  - ATAN: Calculate the arc tangent of an expression, vector, matrix, or number
  - ASIN: Calculate the arc sine of an expression, vector, matrix, or number
  - ACOS: Calculate the arc cosine of an expression, vector, matrix, or number
+ - TANH: Calculate the hyperbolic tangent of an expression, vector, matrix, or number
+ - SINH: Calculate the hyperbolic sine of an expression, vector, matrix, or number
+ - COSH: Calculate the hyperbolic cosine of an expression, vector, matrix, or number
+ - ATANH: Calculate the inverse hyperbolic tangent of an expression, vector, matrix, or number
+ - ASINH: Calculate the inverse hyperbolic sine of an expression, vector, matrix, or number
+ - ACOSH: Calculate the inverse hyperbolic cosine of an expression, vector, matrix, or number
  - LOG: Calculate the natural logarithm of an expression, vector, matrix, or number
  - ABS: Calculate the absolute value of an expression, vector, matrix, or number
  - DETR: Calculate the determinant of a 2x2 or 3x3 matrix
@@ -879,6 +946,11 @@ Note that commands are case-sensitive.
  - ELEMENT: Get info about an element in the periodic table(by atomic number)
  - MOVIE: Get info about a movie(the data source I used had not been updated since 2013)
  - INV: Compute the inverse of a square matrix
+ - MXV: Matrix-vector multiplication
+ - ONES: An NxM matrix of all ones
+ - ZEROES: An NxM matrix of all zeroes
+ - LTRI: Isolate the lower triangular portion of a square matrix and set the upper part to zeroes
+ - UTRI: Isolate the upper triangular portion of a square matrix and set the lower part to zeroes
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]

@@ -26,6 +26,12 @@ Note that commands are case-sensitive.
  - ```ATAN```: Calculate the arc tangent of an expression, vector, matrix, or number
  - ```ASIN```: Calculate the arc sine of an expression, vector, matrix, or number
  - ```ACOS```: Calculate the arc cosine of an expression, vector, matrix, or number
+ - ```TANH```: Calculate the hyperbolic tangent of an expression, vector, matrix, or number
+ - ```SINH```: Calculate the hyperbolic sine of an expression, vector, matrix, or number
+ - ```COSH```: Calculate the hyperbolic cosine of an expression, vector, matrix, or number
+ - ```ATANH```: Calculate the inverse hyperbolic tangent of an expression, vector, matrix, or number
+ - ```ASINH```: Calculate the inverse hyperbolic sine of an expression, vector, matrix, or number
+ - ```ACOSH```: Calculate the inverse hyperbolic cosine of an expression, vector, matrix, or number
  - ```LOG```: Calculate the natural logarithm of an expression, vector, matrix, or number
  - ```ABS```: Calculate the absolute value of an expression, vector, matrix, or number
  - ```DETR```: Calculate the determinant of a 2x2 or 3x3 matrix
@@ -37,6 +43,11 @@ Note that commands are case-sensitive.
  - ```ELEMENT```: Get info about an element in the periodic table(by atomic number)
  - ```MOVIE```: Get info about a movie(the data source I used had not been updated since 2013)
  - ```INV```: Compute the inverse of a square matrix
+ - ```MXV```: Matrix-vector multiplication
+ - ```ONES```: An NxM matrix of all ones
+ - ```ZEROES```: An NxM matrix of all zeroes
+ - ```LTRI```: Isolate the lower triangular portion of a square matrix and set the upper part to zeroes
+ - ```UTRI```: Isolate the upper triangular portion of a square matrix and set the lower part to zeroes
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
