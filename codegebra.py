@@ -234,117 +234,228 @@ def solve(equation):
 
 
 def derivative(expression):
-    og_expression = expression
-    expression = parseEq(expression)
-    new_expression = []
-    for term in expression:
-        if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
-            # Power rule
-            term = term.split("x^")
-            if term[0] == "":
-                a = 1
-            else:
-                a = int(term[0])
-            b = int(term[1])
-            a = a * b
-            b = b - 1
-            if b == 1:
-                b = "x"
-            elif b == 0:
-                b = ""
-            else:
-                b = f"x^{b}"
-            if a == 1:
-                a = ""
-            term = f"{a}{b}"
-            new_expression.append(term)
-            # Special cases
-        elif term == "log x" or term == "log(x)":
-            new_expression.append("1/x")
-        elif term == "sin x" or term == "sin(x)":
-            new_expression.append("cos(x)")
-        elif term == "e^x" or term == "e**x":
-            new_expression.append("e^x")
-        elif term == "1/x":
-            new_expression.append("-1/x^2")
-        elif term == "cos x" or term == "cos(x)":
-            new_expression.append("sin(x)")
-
-        elif re.findall(r'\d+(\*?)x', term) != []:
-            # Regular slope
-            if "*" in term:
-                new_expression.append(term[:-2])
-            else:
-                new_expression.append(term[:-1])
-    new_expression_str = ""
-    for term in new_expression:
-        if new_expression_str == "":
-            new_expression_str = term
-        else:
-            if term[0] == "-":
-                new_expression_str = new_expression_str + term
-            else:
-                new_expression_str = new_expression_str + "+" + term
-    print(f"d/dx ({og_expression}) = " + new_expression_str)
+  og_expression = expression
+  expression = parseEq(expression)
+  new_expression = []
+  for term in expression:
+      if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
+          # Power rule
+          term = term.split("x^")
+          if term[0] == "":
+              a = 1
+          else:
+              a = int(term[0])
+          b = int(term[1])
+          a = a * b
+          b = b - 1
+          if b == 1:
+              b = "x"
+          elif b == 0:
+              b = ""
+          else:
+              b = f"x^{b}"
+          if a == 1:
+              a = ""
+          term = f"{a}{b}"
+          new_expression.append(term)
+          # Special cases
+      elif term == "log x" or term == "log(x)":
+          new_expression.append("1/x")
+      elif term == "sin x" or term == "sin(x)":
+          new_expression.append("cos(x)")
+      elif term == "tan x" or term == "tan(x)":
+        new_expression.append("sec^2(x)")
+      elif term == "sinh x" or term == "sinh(x)":
+        new_expression.append("cosh(x)")
+      elif term == "cosh x" or term == "cosh(x)":
+        new_expression.append("sinh(x)")
+      elif term == "tanh x" or term == "tanh(x)":
+        new_expression.append("sech^2(x)")
+      elif term == "-acos x" or term == "-acos(x)" or term == "acos x" or term == "acos(x)" or term == "asin(x)" or term == "asin x":
+        new_expression.append("1/√(1-x^2)")
+      elif term == "atan x" or term == "atan(x)":
+        new_expression.append("1/(x^2-1)")
+      elif term == "acosh x" or term == "acosh(x)":
+        new_expression.append("1/√(x^2+1)*√(x^2-1)")
+      elif term == "asinh x" or term == "asinh(x)":
+        new_expression.append("1/√(x^2+1)")
+      elif term == "atanh x" or term == "atanh(x)":
+        new_expression.append("1/(1 - x^2)")
+      elif term == "sec^2 x" or term == "sec^2(x)":
+          new_expression.append("2*tan(x)*sec^2(x)")
+      elif term == "sech^2 x" or term == "sech^2(x)":
+          new_expression.append("-2*tanh(x)*sech^2(x)")
+      elif term == "e^x" or term == "e**x":
+          new_expression.append("e^x")
+      elif term == "1/x":
+          new_expression.append("-1/x^2")
+      elif term == "cos x" or term == "cos(x)":
+          new_expression.append("sin(x)")
+      elif term == "-log x" or term == "-log(x)":
+          new_expression.append("-1/x")
+      elif term == "-sin x" or term == "-sin(x)":
+          new_expression.append("-cos(x)")
+      elif term == "-tan x" or term == "-tan(x)":
+        new_expression.append("-sec^2(x)")
+      elif term == "-sinh x" or term == "-sinh(x)":
+        new_expression.append("-cosh(x)")
+      elif term == "-cosh x" or term == "-cosh(x)":
+        new_expression.append("-sinh(x)")
+      elif term == "-tanh x" or term == "-tanh(x)":
+        new_expression.append("-sech^2(x)")
+      elif term == "-asin(x)" or term == "-asin x":
+        new_expression.append("-1/√(1-x^2)")
+      elif term == "-atan x" or term == "-atan(x)":
+        new_expression.append("-1/(x^2+1)")
+      elif term == "-acosh x" or term == "-acosh(x)":
+        new_expression.append("-1/√(x^2+1)*√(x^2-1)")
+      elif term == "-asinh x" or term == "-asinh(x)":
+        new_expression.append("-1/√(x^2+1)")
+      elif term == "-atanh x" or term == "-atanh(x)":
+        new_expression.append("1/(x^2-1)")
+      elif term == "-sec^2 x" or term == "-sec^2(x)":
+          new_expression.append("-2*tan(x)*sec^2(x)")
+      elif term == "-sech^2 x" or term == "-sech^2(x)":
+          new_expression.append("2*tanh(x)*sech^2(x)")
+      elif term == "-e^x" or term == "-e**x":
+          new_expression.append("-e^x")
+      elif term == "-1/x":
+          new_expression.append("1/x^2")
+      elif term == "-cos x" or term == "-cos(x)":
+          new_expression.append("sin(x)")
+      elif re.findall(r'\d+(\*?)x', term) != []:
+          # Regular slope
+          if "*" in term:
+              new_expression.append(term[:-2])
+          else:
+              new_expression.append(term[:-1])
+  new_expression_str = ""
+  for term in new_expression:
+      if new_expression_str == "":
+          new_expression_str = term
+      else:
+          if term[0] == "-":
+              new_expression_str = new_expression_str + term
+          else:
+              new_expression_str = new_expression_str + "+" + term
+  print(f"d/dx ({og_expression}) = " + new_expression_str)
 
 
 def integrate(expression):
-    og_expression = expression
-    expression = parseEq(expression)
-    new_expression = []
-    for term in expression:
-        if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
-            # Inverse power rule
-            term = term.split("x^")
-            if term[0] == "":
-                a = 1
-            else:
-                a = int(term[0])
-            b = int(term[1])
-            a = a / (b + 1)
-            b = b + 1
-            if b == 1:
-                b = "x"
-            elif b == 0:
-                b = ""
-            else:
-                b = f"x^{b}"
-            if a == 1:
-                a = ""
-            term = f"{a}{b}"
-            new_expression.append(term)
-        elif re.match(r'(\-?)\d+x', term):
-            print(term)
-            term = term.replace("x", "")
-            if term == "":
-                new_expression.append("x^2/2")
-            else:
-                new_expression.append(f"{int(term) / 2}x^2")
-        # Cases that can't be solved by the inverse power rule
-        elif term == "log x" or term == "log(x)":
-            new_expression.append("x(log(x)-1)")
-        elif term == "sin x" or term == "sin(x)":
-            new_expression.append("-cos(x)")
-        elif term == "e^x" or term == "e**x":
-            new_expression.append("e^x")
-        elif term == "1/x":
-            new_expression.append("log(x)")
-        elif term == "cos x" or term == "cos(x)":
-            new_expression.append("sin(x)")
-        elif re.match(r'(\-?)\d+', term):
-            # Reverse slope
-            new_expression.append(term + "x")
-    # Combine all the terms into a single string
-    new_expression_str = ""
-    for term in new_expression:
-        if new_expression_str == "":
-            new_expression_str = term
-        else:
-            if term[0] == "-":
-                new_expression_str = new_expression_str + term
-            else:
-                new_expression_str = new_expression_str + "+" + term
-    print(f"∫ ({og_expression}) dx = {new_expression_str} + C")
+  og_expression = expression
+  expression = parseEq(expression)
+  new_expression = []
+  for term in expression:
+      if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
+          # Inverse power rule
+          term = term.split("x^")
+          if term[0] == "":
+              a = 1
+          else:
+              a = int(term[0])
+          b = int(term[1])
+          a = a / (b + 1)
+          b = b + 1
+          if b == 1:
+              b = "x"
+          elif b == 0:
+              b = ""
+          else:
+              b = f"x^{b}"
+          if a == 1:
+              a = ""
+          term = f"{a}{b}"
+          new_expression.append(term)
+      elif re.match(r'(\-?)\d+x', term):
+          print(term)
+          term = term.replace("x", "")
+          if term == "":
+              new_expression.append("x^2/2")
+          else:
+              new_expression.append(f"{int(term) / 2}x^2")
+      # Cases that can't be solved by the inverse power rule
+      elif term == "log x" or term == "log(x)":
+          new_expression.append("x(log(x)-1)")
+      elif term == "sin x" or term == "sin(x)":
+          new_expression.append("-cos(x)")
+      elif term == "e^x" or term == "e**x":
+          new_expression.append("e^x")
+      elif term == "1/x":
+          new_expression.append("log(x)")
+      elif term == "cos x" or term == "cos(x)":
+          new_expression.append("sin(x)")
+      elif term == "tan x" or term == "tan(x)":
+        new_expression.append("-log(cos((x))")
+      elif term == "sinh x" or term == "sinh(x)":
+        new_expression.append("cosh(x)")
+      elif term == "cosh x" or term == "cosh(x)":
+        new_expression.append("sinh(x)")
+      elif term == "tanh x" or term == "tanh(x)":
+        new_expression.append("log(cosh(x))")
+      elif term == "acos x" or term == "acos(x)":
+        new_expression.append("x*acos(x)-√(1-x^2)")
+      elif term == "asin x" or term == "asin(x)":
+        new_expression.append("√(1-x^2)+x*asin(x)")
+      elif term == "atan x" or term == "atan(x)":
+        new_expression.append("x*atan(x)-0.5*log(x^2+1)")
+      elif term == "acosh x" or term == "acosh(x)":
+        new_expression.append("x*asinh(x)-√(x^2+1)*√(x^2-1)")
+      elif term == "asinh x" or term == "asinh(x)":
+        new_expression.append("x*asinh(x)-√(x^2+1)")
+      elif term == "atanh x" or term == "atanh(x)":
+        new_expression.append("0.5*log(1-x^2)+x*atanh(x)")
+      elif term == "sec^2 x" or term == "sec^2(x)":
+          new_expression.append("tan(x)")
+      elif term == "sech^2 x" or term == "sech^2(x)":
+          new_expression.append("tanh(x)")
+      elif term == "-acos x" or term == "-acos(x)":
+          new_expression.append("√(1-x^2)-x*acos(x)")
+      elif term == "-log x" or term == "-log(x)":
+          new_expression.append("x-x*log(x)")
+      elif term == "-sin x" or term == "-sin(x)":
+          new_expression.append("cos(x)")
+      elif term == "-tan x" or term == "-tan(x)":
+        new_expression.append("log(cos(x))")
+      elif term == "-sinh x" or term == "-sinh(x)":
+        new_expression.append("-cosh(x)")
+      elif term == "-cosh x" or term == "-cosh(x)":
+        new_expression.append("-sinh(x)")
+      elif term == "-tanh x" or term == "-tanh(x)":
+        new_expression.append("-log(cos(x))")
+      elif term == "-asin(x)" or term == "-asin x":
+        new_expression.append("-√(1-x^2)-x*asin(x)")
+      elif term == "-atan x" or term == "-atan(x)":
+        new_expression.append("0.5*log(x^2+1)-x*atan(x)")
+      elif term == "-acosh x" or term == "-acosh(x)":
+        new_expression.append("√(x^2+1)*√(x^2-1)-x*acosh(x)")
+      elif term == "-asinh x" or term == "-asinh(x)":
+        new_expression.append("√(x^2+1)-x*asinh(x)")
+      elif term == "-atanh x" or term == "-atanh(x)":
+        new_expression.append("-0.5*log(1-x^2)-x*atanh(x)")
+      elif term == "-sec^2 x" or term == "-sec^2(x)":
+          new_expression.append("-tan(x)")
+      elif term == "-sech^2 x" or term == "-sech^2(x)":
+          new_expression.append("-tanh(x)")
+      elif term == "-e^x" or term == "-e**x":
+          new_expression.append("-e^x")
+      elif term == "-1/x":
+          new_expression.append("-log(x)")
+      elif term == "-cos x" or term == "-cos(x)":
+          new_expression.append("-sin(x)")
+      elif re.match(r'(\-?)\d+', term):
+          # Reverse slope
+          new_expression.append(term + "x")
+  # Combine all the terms into a single string
+  new_expression_str = ""
+  for term in new_expression:
+      if new_expression_str == "":
+          new_expression_str = term
+      else:
+          if term[0] == "-":
+              new_expression_str = new_expression_str + term
+          else:
+              new_expression_str = new_expression_str + "+" + term
+  print(f"∫ ({og_expression}) dx = {new_expression_str} + C")
 
 
 def scale_vector(scalar, vector):
