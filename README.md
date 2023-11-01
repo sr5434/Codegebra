@@ -32,6 +32,10 @@ Note that commands are case-sensitive.
  - ```ATANH```: Calculate the inverse hyperbolic tangent of an expression, vector, matrix, or number
  - ```ASINH```: Calculate the inverse hyperbolic sine of an expression, vector, matrix, or number
  - ```ACOSH```: Calculate the inverse hyperbolic cosine of an expression, vector, matrix, or number
+ - ```SEC```: Calculate the secant of an expression, vector, matrix, or number
+ - ```SECH```: Calculate the hyperbolic secant of an expression, vector, matrix, or number
+ - ```CSC```: Calculate the cosecant of an expression, vector, matrix, or number
+ - ```CSCH```: Calculate the hyperbolic cosecant of an expression, vector, matrix, or number
  - ```LOG```: Calculate the natural logarithm of an expression, vector, matrix, or number
  - ```ABS```: Calculate the absolute value of an expression, vector, matrix, or number
  - ```DETR```: Calculate the determinant of a 2x2 or 3x3 matrix

@@ -952,9 +952,7 @@ while True:
             pretty_print_matrix([[cmath.asinh(i) for i in j] for j in expression])
         else:
             print(cmath.asinh(eval_(ast.parse(expression, mode='eval').body)))
-    elif cmd == "COSH":
-        
-
+    elif cmd == "ACOSH":
 
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
@@ -965,6 +963,46 @@ while True:
             pretty_print_matrix([[cmath.acosh(i) for i in j] for j in expression])
         else:
             print(cmath.acosh(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "SEC":
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([1 / cmath.cos(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[1 / cmath.cos(i) for i in j] for j in expression])
+        else:
+            print(1 / cmath.cos(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "SECH":
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([1 / cmath.cosh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[1 / cmath.cosh(i) for i in j] for j in expression])
+        else:
+            print(1 / cmath.cosh(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "CSC":
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([1 / cmath.sin(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[1 / cmath.sin(i) for i in j] for j in expression])
+        else:
+            print(1 / cmath.sin(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "CSCH":
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([1 / cmath.sinh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[1 / cmath.sinh(i) for i in j] for j in expression])
+        else:
+            print(1 / cmath.sinh(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "NORM":
         # Euclidean Normalization
         mode = input("1, 2, OR INFINITY NORM>")
@@ -1046,6 +1084,10 @@ Note that commands are case-sensitive.
  - ATANH: Calculate the inverse hyperbolic tangent of an expression, vector, matrix, or number
  - ASINH: Calculate the inverse hyperbolic sine of an expression, vector, matrix, or number
  - ACOSH: Calculate the inverse hyperbolic cosine of an expression, vector, matrix, or number
+ - SEC: Calculate the secant of an expression, vector, matrix, or number
+ - SECH: Calculate the hyperbolic secant of an expression, vector, matrix, or number
+ - CSC: Calculate the cosecant of an expression, vector, matrix, or number
+ - CSCH: Calculate the hyperbolic cosecant of an expression, vector, matrix, or number
  - LOG: Calculate the natural logarithm of an expression, vector, matrix, or number
  - ABS: Calculate the absolute value of an expression, vector, matrix, or number
  - DETR: Calculate the determinant of a 2x2 or 3x3 matrix
