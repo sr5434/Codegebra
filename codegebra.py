@@ -1049,6 +1049,30 @@ while True:
         matrix = matrix_parse(matrix)
         new_matrix = [[matrix[i][j] if j <= i else 0 for j in range(len(matrix[i]))] for i in range(len(matrix))]
         pretty_print_matrix(new_matrix)
+    elif cmd == "FAC":
+        expression = input("INPUT>")
+        if "[" in expression and not ";" in expression:
+            expression = expression.strip('][').split(', ')
+            print([math.factorial(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+        elif "[" in expression and ";" in expression:
+            expression = matrix_parse(expression)
+            pretty_print_matrix([[math.factorial(i) for i in j] for j in expression])
+        else:
+            print(math.factorial(eval_(ast.parse(expression, mode='eval').body)))
+    elif cmd == "RAT":
+        num = input("DECIMAL TO BE RATIONALIZED>")
+        num = num.replace(".", "")
+        num = list(num)
+        expr = f"{num[0]} + 1/"
+        num = num[1:]
+        for i in range(len(num)):
+            if i != len(num)-1:
+                expr += f"({num[i]} + 1/"
+            else:
+                expr += f"({num[i]}"
+        expr += ")"*(len(num)-1)
+        print(expr)
+
     elif cmd == "HELP":
         help_str = """Codegebra
 A "computational intelligence system"(basically a fancy calculator that can tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1104,6 +1128,8 @@ Note that commands are case-sensitive.
  - ZEROES: An NxM matrix of all zeroes
  - LTRI: Isolate the lower triangular portion of a square matrix and set the upper part to zeroes
  - UTRI: Isolate the upper triangular portion of a square matrix and set the lower part to zeroes
+ - FAC: Factorial of a number
+ - RAT: Approximate the rational form of a number
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]

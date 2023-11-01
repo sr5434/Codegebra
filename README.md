@@ -52,6 +52,8 @@ Note that commands are case-sensitive.
  - ```ZEROES```: An NxM matrix of all zeroes
  - ```LTRI```: Isolate the lower triangular portion of a square matrix and set the upper part to zeroes
  - ```UTRI```: Isolate the upper triangular portion of a square matrix and set the lower part to zeroes
+ - ```FAC```: Factorial of a number
+ - ```RAT```: Approximate the rational form of a number
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
