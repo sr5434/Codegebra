@@ -1147,7 +1147,7 @@ Note that commands are case-sensitive.
  - UTRI: Isolate the upper triangular portion of a square matrix and set the lower part to zeroes
  - FAC: Factorial of a number
  - RAT: Approximate the rational form of a number
- - DIST: Find the distance between 2 points in a 2d or 3d plane
+ - DIST: Find the distance between 2 points in a 2d or 3d plane 
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
