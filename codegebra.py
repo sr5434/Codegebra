@@ -1072,7 +1072,24 @@ while True:
                 expr += f"({num[i]}"
         expr += ")"*(len(num)-1)
         print(expr)
-
+    elif cmd == "DIST":
+        dims = input("DIMENSIONS(2 OR 3)>")
+        if dims == "2":
+            x1 = float(input("X1>"))
+            y1 = float(input("Y1>"))
+            x2 = float(input("X2>"))
+            y2 = float(input("Y2>"))
+            print(math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2))
+        elif dims == "3":
+            x1 = float(input("X1>"))
+            y1 = float(input("Y1>"))
+            z1 = float(input("Z1>"))
+            x2 = float(input("X2>"))
+            y2 = float(input("Y2>"))
+            z2 = float(input("Z2>"))
+            print(math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2))
+        else:
+            print("ERROR: DIMS NOT VALID")
     elif cmd == "HELP":
         help_str = """Codegebra
 A "computational intelligence system"(basically a fancy calculator that can tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1130,6 +1147,7 @@ Note that commands are case-sensitive.
  - UTRI: Isolate the upper triangular portion of a square matrix and set the lower part to zeroes
  - FAC: Factorial of a number
  - RAT: Approximate the rational form of a number
+ - DIST: Find the distance between 2 points in a 2d or 3d plane 
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
