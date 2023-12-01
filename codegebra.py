@@ -99,6 +99,75 @@ def simplifyTerms(terms):
     else:
         return [f"{x_coeff}x", str(const), is_quadratic, x2_coeff]
 
+def simpStdForm(equation):
+  equation = equation.replace(" ", "")  # Remove whitespace
+  # Equation mode
+  right, left = equation.split("=")  # Split string into left and right sides of the equal sign
+  # Seperate terms on each side of the equation
+  left = " ".join(left.split("+"))
+  left = left.replace("-", " -")
+  right = " ".join(right.split("+"))
+  right = right.replace("-", " -")
+  right = right.split()
+  left = left.split()
+  x_coeff = 0
+  y_coeff = 0
+  const = 0
+  for term in right:
+    if ("x" in term) or ("X" in term):
+      # Take out the X to get the coefficient
+      term = term.replace("x", "")
+      term = term.replace("X", "")
+      if term == "":
+          # If it doesn't have a coefficient than set it to one
+          x_coeff -= 1
+      elif term == "-":
+          # take away 1 if the coefficient is just a negative sign
+          x_coeff += 1
+      else:
+          x_coeff -= float(term)  # If x has a coefficient then add it to the running tally
+    elif ("y" in term) or ("Y" in term):
+      # Take out the X to get the coefficient
+      term = term.replace("y", "")
+      term = term.replace("Y", "")
+      if term == "":
+          # If it doesn't have a coefficient than set it to one
+          y_coeff -= 1
+      elif term == "-":
+          # take away 1 if the coefficient is just a negative sign
+          y_coeff += 1
+      else:
+          y_coeff -= float(term)  # If y has a coefficient then add it to the running tally
+    else:
+      const -= float(term)  # Add to the running tally for the constant
+  for term in left:
+    if ("x" in term) or ("X" in term):
+      # Take out the X to get the coefficient
+      term = term.replace("x", "")
+      term = term.replace("X", "")
+      if term == "":
+          # If it doesn't have a coefficient than set it to one
+          x_coeff += 1
+      elif term == "-":
+          # take away 1 if the coefficient is just a negative sign
+          x_coeff += -1
+      else:
+          x_coeff += float(term)  # If x has a coefficient then add it to the running tally
+    elif ("y" in term) or ("Y" in term):
+      # Take out the X to get the coefficient
+      term = term.replace("y", "")
+      term = term.replace("Y", "")
+      if term == "":
+          # If it doesn't have a coefficient than set it to one
+          y_coeff += 1
+      elif term == "-":
+          # take away 1 if the coefficient is just a negative sign
+          y_coeff += -1
+      else:
+          y_coeff += float(term)  # If y has a coefficient then add it to the running tally
+    else:
+      const += float(term)  # Add to the running tally for the constant
+  return (x_coeff, y_coeff, const)
 
 def parseEq(eq):
     eq = eq.replace(" ", "")  # Remove whitespace
@@ -678,7 +747,7 @@ while True:
             i += 1
             print(f"{i}. - {row}")
     elif cmd == "EXP":
-        
+
 
 
         expression = input("EXPONENT>")
@@ -691,7 +760,7 @@ while True:
         else:
             print(cmath.exp(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "SQRT":
-        
+
 
 
         expression = input("INPUT>")
@@ -704,7 +773,7 @@ while True:
         else:
             print(cmath.sqrt(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "SIN":
-        
+
 
 
         expression = input("INPUT>")
@@ -717,7 +786,7 @@ while True:
         else:
             print(cmath.sin(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "COS":
-        
+
 
 
         expression = input("INPUT>")
@@ -730,7 +799,7 @@ while True:
         else:
             print(cmath.cos(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "TAN":
-        
+
 
 
         expression = input("INPUT>")
@@ -743,7 +812,7 @@ while True:
         else:
             print(cmath.tan(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ATAN":
-        
+
 
 
         expression = input("INPUT>")
@@ -756,7 +825,7 @@ while True:
         else:
             print(cmath.atan(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ASIN":
-        
+
 
 
         expression = input("INPUT>")
@@ -769,7 +838,7 @@ while True:
         else:
             print(cmath.asin(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ACOS":
-        
+
 
 
         expression = input("INPUT>")
@@ -782,7 +851,7 @@ while True:
         else:
             print(cmath.acos(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "LOG":
-        
+
 
 
         expression = input("INPUT>")
@@ -795,7 +864,7 @@ while True:
         else:
             print(cmath.log(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ABS":
-        
+
 
 
         expression = input("INPUT>")
@@ -844,7 +913,7 @@ while True:
             id_matrix.append(row)
         pretty_print_matrix(id_matrix)
     elif cmd == "EVAL":
-        
+
 
 
         expression = input("EXPRESSION>")
@@ -888,7 +957,7 @@ while True:
         inv_a = lapack.sgetri(LU, PIV)
         pretty_print_matrix(inv_a)
     elif cmd == "SINH":
-        
+
 
 
         expression = input("INPUT>")
@@ -901,7 +970,7 @@ while True:
         else:
             print(cmath.sinh(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "COSH":
-        
+
 
 
         expression = input("INPUT>")
@@ -914,7 +983,7 @@ while True:
         else:
             print(cmath.cosh(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "TANH":
-        
+
 
 
         expression = input("INPUT>")
@@ -927,7 +996,7 @@ while True:
         else:
             print(cmath.tanh(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ATANH":
-        
+
 
 
         expression = input("INPUT>")
@@ -940,7 +1009,7 @@ while True:
         else:
             print(cmath.atanh(eval_(ast.parse(expression, mode='eval').body)))
     elif cmd == "ASINH":
-        
+
 
 
         expression = input("INPUT>")
@@ -1107,20 +1176,92 @@ while True:
             print("Dist:" + str(dist))
         elif dims == "3":
             dist = 0
+            x1 = float(input("X1>"))
+            y1 = float(input("Y1>"))
+            z1 = float(input("Z1>"))
             for i in range(nodes):
-                x1 = float(input("X1>"))
-                y1 = float(input("Y1>"))
-                z1 = float(input("Z1>"))
-                x2 = float(input("X2>"))
-                y2 = float(input("Y2>"))
-                z2 = float(input("Z2>"))
+                x2 = float(input(f"X{i+2}>"))
+                y2 = float(input(f"Y{i+2}>"))
+                z2 = float(input(f"Z{i+2}>"))
                 dist += math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
+                x1=x2
+                y1=y2
             print("Dist:" + str(dist))
         else:
             print("ERROR: DIMS NOT VALID")
+    elif cmd == "TRANS":
+        dims = input("DIMENSIONS(2 OR 3)>")
+        nodes = int(input("Number of points on the shape: "))
+        if dims == "2":
+          x = []
+          y = []
+          trans_x = float(input("ΔX>"))
+          trans_y = float(input("ΔY>"))
+          x.append(float(input("X1>")))
+          y.append(float(input("Y1>")))
+          for i in range(nodes-1):
+            x.append(float(input(f"X{i+2}>")))
+            y.append(float(input(f"Y{i+2}>")))
+          print("TRANSLATED POINTS:")
+          for i in range(len(x)):
+            x[i] += trans_x
+            y[i] += trans_y
+            print(f"({x[i]}, {y[i]})")
+        elif dims == "3":
+          x = []
+          y = []
+          z = []
+          trans_x = float(input("ΔX>"))
+          trans_y = float(input("ΔY>"))
+          trans_z = float(input("ΔZ>"))
+          x.append(float(input("X1>")))
+          y.append(float(input("Y1>")))
+          z.append(float(input("Z1>")))
+          for i in range(nodes-1):
+            x.append(float(input(f"X{i+2}>")))
+            y.append(float(input(f"Y{i+2}>")))
+            z.append(float(input(f"Z{i+2}>")))
+          print("TRANSLATED POINTS:")
+          for i in range(len(x)):
+            x[i] += trans_x
+            y[i] += trans_y
+            z[i] += trans_z
+            print(f"({x[i]}, {y[i]}, {z[i]})")
+        else:
+          print("ERROR: DIMS NOT VALID")
+    elif cmd == "PTOL":
+      #https://math.stackexchange.com/questions/1013230/how-to-find-coordinates-of-reflected-point
+      line = input("LINEAR EQUATION>")
+      x_coeff, y_coeff, const = simpStdForm(line)
+      x = float(input("X>"))
+      y = float(input("Y>"))
+      dist = abs((x_coeff*x)+(y_coeff*y)+const)/math.sqrt((x_coeff**2)+(y_coeff**2))
+      print(f"Distance: {dist}")
+    elif cmd == "SYST":
+      #Use elimination to solve the equation
+      eq1 = input("LINEAR EQUATION 1>")
+      eq2 = input("LINEAR EQUATION 2>")
+      x_coeff1, y_coeff1, const1 = simpStdForm(eq1)
+      x_coeff2, y_coeff2, const2 = simpStdForm(eq2)
+      y_coeff1_copy = y_coeff1
+      x_coeff1_copy = x_coeff1
+      const1_copy = const1
+      y_coeff1 *= -1 * y_coeff2
+      x_coeff1 *= -1 * y_coeff2
+      const1 *= -1 * y_coeff2
+      y_coeff2 *= y_coeff1_copy
+      x_coeff2 *= y_coeff1_copy
+      const2 *= y_coeff1_copy
+      x_coeff = x_coeff1 + x_coeff2
+      y_coeff = y_coeff1 + y_coeff2
+      const = const1 + const2
+      x = (const*-1)/x_coeff
+      y = (-1 * const1_copy - x_coeff1_copy*x)/y_coeff1_copy
+      print(f"x = {x}")
+      print(f"y = {y}")
     elif cmd == "HELP":
         help_str = """Codegebra
-A "computational intelligence system"(basically a fancy calculator that can tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
+A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
 Motivation
 I created this so that I could learn how systems like Matlab and Mathematica solve equations. However, I continued
 to add more features after reaching my initial goal.
@@ -1131,7 +1272,7 @@ Note that commands are case-sensitive.
  - SCALE: Scale a vector
  - DOTPR: Find the dot product of 2 vectors
  - ADDVEC: Find the sum of 2 vectors
- - EIGVAL: Find the eigenvalues of a matrix
+ - EIGVAL: Find the eigenvalues of a matrix      
  - TRANSP: Transpose a matrix
  - FFT: Run a Discrete Fourier Transform on a signal
  - IFFT: Run an Inverse Fourier Transform on a signal
@@ -1177,6 +1318,9 @@ Note that commands are case-sensitive.
  - RAT: Approximate the rational form of a number
  - DIST: Find the distance between 2 points in a 2d or 3d plane
  - PATH: Find the distance taken of a path that traverses user-specified points on a 2d or 3d plane
+ - TRANS: Translate a 2d or 3d shape
+ - PTOL: Distance from a point to a line
+ - SYST: Solve a system of linear equations
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]

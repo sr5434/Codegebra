@@ -56,6 +56,9 @@ Note that commands are case-sensitive.
  - ```RAT```: Approximate the rational form of a number
  - ```DIST```: Find the distance between 2 points in a 2d or 3d plane
  - ```PATH```: Find the distance taken of a path that traverses user-specified points on a 2d or 3d plane
+ - ```TRANS```: Translate a 2d or 3d shape
+ - ```PTOL```: Distance from a point to a line
+ - ```SYST```: Solve a system of linear equations
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
