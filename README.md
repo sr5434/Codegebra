@@ -59,6 +59,7 @@ Note that commands are case-sensitive.
  - ```TRANS```: Translate a 2d or 3d shape
  - ```PTOL```: Distance from a point to a line
  - ```SYST```: Solve a system of linear equations
+ - ```DILA```: Dilate a shape about point p by scale factor k
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```

@@ -1259,8 +1259,27 @@ while True:
       y = (-1 * const1_copy - x_coeff1_copy*x)/y_coeff1_copy
       print(f"x = {x}")
       print(f"y = {y}")
+    elif cmd == "DILA":
+      k = float(input("SCALE FACTOR>"))
+      px = float(input("PX>"))
+      py = float(input("PY>"))
+      nodes = int(input("NUMBER OF POINTS>"))
+      x = []
+      y = []
+      x.append(float(input("X1>")))
+      y.append(float(input("Y1>")))
+      for i in range(nodes-1):
+        x.append(float(input(f"X{i+2}>")))
+        y.append(float(input(f"Y{i+2}>")))
+      print("DIALATED POINTS:")
+      for i in range(len(x)):
+        dx = x[i]-px
+        dy = y[i]-py
+        x[i] = px+dx*k
+        y[i] = py+dy*k
+        print(f"({x[i]}, {y[i]})")
     elif cmd == "HELP":
-        help_str = """Codegebra
+        help_str = f"""{ascii_art}
 A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
 Motivation
 I created this so that I could learn how systems like Matlab and Mathematica solve equations. However, I continued
@@ -1321,6 +1340,7 @@ Note that commands are case-sensitive.
  - TRANS: Translate a 2d or 3d shape
  - PTOL: Distance from a point to a line
  - SYST: Solve a system of linear equations
+ - DILA: Dilate a shape about point p by scale factor k
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
