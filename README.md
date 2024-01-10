@@ -60,6 +60,9 @@ Note that commands are case-sensitive.
  - ```PTOL```: Distance from a point to a line
  - ```SYST```: Solve a system of linear equations
  - ```DILA```: Dilate a shape about point p by scale factor k
+ - ```HILB```: An NxN Hilbert matrix
+ - ```MAGIC```: Generate NxN magic matricies when N is odd
+ - ```RCOND```: Reciprocal condition number of a matrix
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```

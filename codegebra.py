@@ -1390,6 +1390,7 @@ while True:
             x.append(float(input(f"X{i + 2}>")))
             y.append(float(input(f"Y{i + 2}>")))
         print("DIALATED POINTS:")
+        ans = "["
         for i in range(len(x)):
             dx = x[i] - px
             dy = y[i] - py
@@ -1398,6 +1399,67 @@ while True:
             print(f"({x[i]}, {y[i]})")
             ans += f"{x[i]}, {y[i]}; "
         ans = ans[:-2] + "]"
+    elif cmd == "HILB":
+        n = int(input("N>"))
+        mat = []
+        for i in range(n):
+            row = []
+            for j in range(n):
+                row.append(str(1/((1+i)+(1+j)-1)))
+            mat.append(row)
+        ans = format_mat(mat)
+        pretty_print_matrix(mat)
+    elif cmd == "MAGIC":
+        n = int(input("N>"))
+        if n < 3:
+            print("ERROR: N MUST BE GREATER THAN 3")
+        elif n % 2 == 0:
+            print("ERROR: N MUST BE ODD")
+        else:
+            possibilities = [i+1 for i in range(n**2)]
+            matrix = [[0 for j in range(n)] for i in range(n)]
+            coords = [0, n / 2 - 0.5]
+
+            for i in possibilities:
+                if i == 1:
+                    matrix[0][int((n/2-0.5))] = 1
+                else:
+                    coords_old = coords.copy()
+                    if coords[0]-1 < 0:
+                        coords[0] = n-1
+                    else:
+                        coords[0] = coords[0] - 1
+                    if coords[1]+1 > n-1:
+                        coords[1] = 0
+                    else:
+                        coords[1] = coords[1] + 1
+                    coords[0] = int(coords[0])
+                    coords[1] = int(coords[1])
+                    if matrix[coords[0]][coords[1]] == 0:
+                        matrix[coords[0]][coords[1]] = i
+                    else:
+                        cont = True
+                        while cont:
+                            coords_old[0] += 1
+                            if coords_old[1] + 1 > n:
+                                coords_old[0] = n-1
+                                continue
+                            if coords_old[0] + 1 > n:
+                                coords_old[1] = 0
+                                continue
+                            if matrix[coords_old[0]][coords_old[1]] == 0:
+                                cont = False
+                        coords = coords_old
+                        matrix[coords[0]][coords[1]] = i
+            ans = format_mat(matrix)
+            pretty_print_matrix(matrix)
+    elif cmd == "RCOND":
+        matrix = matrix_parse(input("MATRIX>"))
+        LU, PIV, _ = lapack.dgetrf(matrix)
+        anorm = lapack.dlange("1", matrix)
+        cond = lapack.dgecon(LU, anorm)
+        print(cond[0])
+        ans = cond[0]
     elif cmd == "HELP":
         help_str = f"""{ascii_art}
 A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1461,6 +1523,9 @@ Note that commands are case-sensitive.
  - PTOL: Distance from a point to a line
  - SYST: Solve a system of linear equations
  - DILA: Dilate a shape about point p by scale factor k
+ - HILB: An NxN Hilbert matrix
+ - MAGIC: Generate NxN magic matricies when N is odd
+ - RCOND: Reciprocal condition number of a matrix
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
