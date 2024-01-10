@@ -13,6 +13,23 @@ operators = {ast.Add: op.add, ast.Sub: op.sub, ast.Mult: op.mul,
 
 pattern = r'-?[0-9.]+\s*=\s*(?:[0-9.]+\s*\*\s*)?[0-9.]+\^\(x-[0-9.]+\)(?:\s*\+\s*[0-9.]+)?'
 
+ans = ""
+ans_alt = ""
+input_prim = input  # move native input function so we can modify
+
+
+def input(prompt):
+    global ans, ans_alt
+    # Reimplement python input function with support for ans
+    inp = input_prim(prompt)  # Use primitive input to actually get the data
+    if type(ans) != str:
+        ans = str(ans)
+    if type(ans_alt) != str:
+        ans_alt = str(ans_alt)
+    inp = inp.replace("ANS2", ans_alt)
+    inp = inp.replace("ANS", ans)
+    return inp
+
 
 def simplifyTerms(terms):
     terms = [item for item in terms if item is not None and item is not False and item is not True]
@@ -99,75 +116,77 @@ def simplifyTerms(terms):
     else:
         return [f"{x_coeff}x", str(const), is_quadratic, x2_coeff]
 
+
 def simpStdForm(equation):
-  equation = equation.replace(" ", "")  # Remove whitespace
-  # Equation mode
-  right, left = equation.split("=")  # Split string into left and right sides of the equal sign
-  # Seperate terms on each side of the equation
-  left = " ".join(left.split("+"))
-  left = left.replace("-", " -")
-  right = " ".join(right.split("+"))
-  right = right.replace("-", " -")
-  right = right.split()
-  left = left.split()
-  x_coeff = 0
-  y_coeff = 0
-  const = 0
-  for term in right:
-    if ("x" in term) or ("X" in term):
-      # Take out the X to get the coefficient
-      term = term.replace("x", "")
-      term = term.replace("X", "")
-      if term == "":
-          # If it doesn't have a coefficient than set it to one
-          x_coeff -= 1
-      elif term == "-":
-          # take away 1 if the coefficient is just a negative sign
-          x_coeff += 1
-      else:
-          x_coeff -= float(term)  # If x has a coefficient then add it to the running tally
-    elif ("y" in term) or ("Y" in term):
-      # Take out the X to get the coefficient
-      term = term.replace("y", "")
-      term = term.replace("Y", "")
-      if term == "":
-          # If it doesn't have a coefficient than set it to one
-          y_coeff -= 1
-      elif term == "-":
-          # take away 1 if the coefficient is just a negative sign
-          y_coeff += 1
-      else:
-          y_coeff -= float(term)  # If y has a coefficient then add it to the running tally
-    else:
-      const -= float(term)  # Add to the running tally for the constant
-  for term in left:
-    if ("x" in term) or ("X" in term):
-      # Take out the X to get the coefficient
-      term = term.replace("x", "")
-      term = term.replace("X", "")
-      if term == "":
-          # If it doesn't have a coefficient than set it to one
-          x_coeff += 1
-      elif term == "-":
-          # take away 1 if the coefficient is just a negative sign
-          x_coeff += -1
-      else:
-          x_coeff += float(term)  # If x has a coefficient then add it to the running tally
-    elif ("y" in term) or ("Y" in term):
-      # Take out the X to get the coefficient
-      term = term.replace("y", "")
-      term = term.replace("Y", "")
-      if term == "":
-          # If it doesn't have a coefficient than set it to one
-          y_coeff += 1
-      elif term == "-":
-          # take away 1 if the coefficient is just a negative sign
-          y_coeff += -1
-      else:
-          y_coeff += float(term)  # If y has a coefficient then add it to the running tally
-    else:
-      const += float(term)  # Add to the running tally for the constant
-  return (x_coeff, y_coeff, const)
+    equation = equation.replace(" ", "")  # Remove whitespace
+    # Equation mode
+    right, left = equation.split("=")  # Split string into left and right sides of the equal sign
+    # Seperate terms on each side of the equation
+    left = " ".join(left.split("+"))
+    left = left.replace("-", " -")
+    right = " ".join(right.split("+"))
+    right = right.replace("-", " -")
+    right = right.split()
+    left = left.split()
+    x_coeff = 0
+    y_coeff = 0
+    const = 0
+    for term in right:
+        if ("x" in term) or ("X" in term):
+            # Take out the X to get the coefficient
+            term = term.replace("x", "")
+            term = term.replace("X", "")
+            if term == "":
+                # If it doesn't have a coefficient than set it to one
+                x_coeff -= 1
+            elif term == "-":
+                # take away 1 if the coefficient is just a negative sign
+                x_coeff += 1
+            else:
+                x_coeff -= float(term)  # If x has a coefficient then add it to the running tally
+        elif ("y" in term) or ("Y" in term):
+            # Take out the X to get the coefficient
+            term = term.replace("y", "")
+            term = term.replace("Y", "")
+            if term == "":
+                # If it doesn't have a coefficient than set it to one
+                y_coeff -= 1
+            elif term == "-":
+                # take away 1 if the coefficient is just a negative sign
+                y_coeff += 1
+            else:
+                y_coeff -= float(term)  # If y has a coefficient then add it to the running tally
+        else:
+            const -= float(term)  # Add to the running tally for the constant
+    for term in left:
+        if ("x" in term) or ("X" in term):
+            # Take out the X to get the coefficient
+            term = term.replace("x", "")
+            term = term.replace("X", "")
+            if term == "":
+                # If it doesn't have a coefficient than set it to one
+                x_coeff += 1
+            elif term == "-":
+                # take away 1 if the coefficient is just a negative sign
+                x_coeff += -1
+            else:
+                x_coeff += float(term)  # If x has a coefficient then add it to the running tally
+        elif ("y" in term) or ("Y" in term):
+            # Take out the X to get the coefficient
+            term = term.replace("y", "")
+            term = term.replace("Y", "")
+            if term == "":
+                # If it doesn't have a coefficient than set it to one
+                y_coeff += 1
+            elif term == "-":
+                # take away 1 if the coefficient is just a negative sign
+                y_coeff += -1
+            else:
+                y_coeff += float(term)  # If y has a coefficient then add it to the running tally
+        else:
+            const += float(term)  # Add to the running tally for the constant
+    return (x_coeff, y_coeff, const)
+
 
 def parseEq(eq):
     eq = eq.replace(" ", "")  # Remove whitespace
@@ -219,6 +238,7 @@ def exponential_solver(y, b, a=1, h=0, k=0):
 
 
 def solve(equation):
+    global ans, ans_alt
     if "x**3" in equation or "x^3" in equation:
         print("Cannot solve polynomials with a degree above 2")
         return 0
@@ -261,17 +281,24 @@ def solve(equation):
             a = 1
         else:
             a = float(left[3].replace("x^2", ""))
-        b = float(left[0].replace("x", ""))
+        if left[0] == None:
+            b = 0
+        else:
+            b = float(left[0].replace("x", ""))
         c = float(left[1])
         x_1, x_2 = quadratic_formula(a, b, c)  # Plug into the quadratic formula
         if x_1 == x_2:
             print(f"x = {x_1}")
+            ans = x_1
         else:
+            ans = x_1
+            ans_alt = x_2
             print(f"x = {x_1}")
             print(f"x = {x_2}")
     elif re.findall(pattern, equation) != []:
         print("Exponential detected")
         left, right = parseEq(equation)
+        ans = exponential_solver(float(left[1]), right[5], right[4], right[6], right[7])
         print(exponential_solver(float(left[1]), right[5], right[4], right[6], right[7]))
         print("n ∈ ℤ(ℤ is the set of integers)")
     else:
@@ -299,245 +326,255 @@ def solve(equation):
         left, right = simplifyTerms(left), simplifyTerms(right)
         x_coeff = float(left[0].replace("x", ""))
         const = float(right[1])
-        print(const / x_coeff)
+        ans = const / x_coeff
+        print(ans)
 
 
 def derivative(expression):
-  og_expression = expression
-  expression = parseEq(expression)
-  new_expression = []
-  for term in expression:
-      if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
-          # Power rule
-          term = term.split("x^")
-          if term[0] == "":
-              a = 1
-          else:
-              a = int(term[0])
-          b = int(term[1])
-          a = a * b
-          b = b - 1
-          if b == 1:
-              b = "x"
-          elif b == 0:
-              b = ""
-          else:
-              b = f"x^{b}"
-          if a == 1:
-              a = ""
-          term = f"{a}{b}"
-          new_expression.append(term)
-          # Special cases
-      elif term == "log x" or term == "log(x)":
-          new_expression.append("1/x")
-      elif term == "sin x" or term == "sin(x)":
-          new_expression.append("cos(x)")
-      elif term == "tan x" or term == "tan(x)":
-        new_expression.append("sec^2(x)")
-      elif term == "sinh x" or term == "sinh(x)":
-        new_expression.append("cosh(x)")
-      elif term == "cosh x" or term == "cosh(x)":
-        new_expression.append("sinh(x)")
-      elif term == "tanh x" or term == "tanh(x)":
-        new_expression.append("sech^2(x)")
-      elif term == "-acos x" or term == "-acos(x)" or term == "acos x" or term == "acos(x)" or term == "asin(x)" or term == "asin x":
-        new_expression.append("1/√(1-x^2)")
-      elif term == "atan x" or term == "atan(x)":
-        new_expression.append("1/(x^2-1)")
-      elif term == "acosh x" or term == "acosh(x)":
-        new_expression.append("1/√(x^2+1)*√(x^2-1)")
-      elif term == "asinh x" or term == "asinh(x)":
-        new_expression.append("1/√(x^2+1)")
-      elif term == "atanh x" or term == "atanh(x)":
-        new_expression.append("1/(1 - x^2)")
-      elif term == "sec^2 x" or term == "sec^2(x)":
-          new_expression.append("2*tan(x)*sec^2(x)")
-      elif term == "sech^2 x" or term == "sech^2(x)":
-          new_expression.append("-2*tanh(x)*sech^2(x)")
-      elif term == "e^x" or term == "e**x":
-          new_expression.append("e^x")
-      elif term == "1/x":
-          new_expression.append("-1/x^2")
-      elif term == "cos x" or term == "cos(x)":
-          new_expression.append("sin(x)")
-      elif term == "-log x" or term == "-log(x)":
-          new_expression.append("-1/x")
-      elif term == "-sin x" or term == "-sin(x)":
-          new_expression.append("-cos(x)")
-      elif term == "-tan x" or term == "-tan(x)":
-        new_expression.append("-sec^2(x)")
-      elif term == "-sinh x" or term == "-sinh(x)":
-        new_expression.append("-cosh(x)")
-      elif term == "-cosh x" or term == "-cosh(x)":
-        new_expression.append("-sinh(x)")
-      elif term == "-tanh x" or term == "-tanh(x)":
-        new_expression.append("-sech^2(x)")
-      elif term == "-asin(x)" or term == "-asin x":
-        new_expression.append("-1/√(1-x^2)")
-      elif term == "-atan x" or term == "-atan(x)":
-        new_expression.append("-1/(x^2+1)")
-      elif term == "-acosh x" or term == "-acosh(x)":
-        new_expression.append("-1/√(x^2+1)*√(x^2-1)")
-      elif term == "-asinh x" or term == "-asinh(x)":
-        new_expression.append("-1/√(x^2+1)")
-      elif term == "-atanh x" or term == "-atanh(x)":
-        new_expression.append("1/(x^2-1)")
-      elif term == "-sec^2 x" or term == "-sec^2(x)":
-          new_expression.append("-2*tan(x)*sec^2(x)")
-      elif term == "-sech^2 x" or term == "-sech^2(x)":
-          new_expression.append("2*tanh(x)*sech^2(x)")
-      elif term == "-e^x" or term == "-e**x":
-          new_expression.append("-e^x")
-      elif term == "-1/x":
-          new_expression.append("1/x^2")
-      elif term == "-cos x" or term == "-cos(x)":
-          new_expression.append("sin(x)")
-      elif re.findall(r'\d+(\*?)x', term) != []:
-          # Regular slope
-          if "*" in term:
-              new_expression.append(term[:-2])
-          else:
-              new_expression.append(term[:-1])
-  new_expression_str = ""
-  for term in new_expression:
-      if new_expression_str == "":
-          new_expression_str = term
-      else:
-          if term[0] == "-":
-              new_expression_str = new_expression_str + term
-          else:
-              new_expression_str = new_expression_str + "+" + term
-  print(f"d/dx ({og_expression}) = " + new_expression_str)
+    global ans, ans_alt
+    og_expression = expression
+    expression = parseEq(expression)
+    new_expression = []
+    for term in expression:
+        if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
+            # Power rule
+            term = term.split("x^")
+            if term[0] == "":
+                a = 1
+            else:
+                a = int(term[0])
+            b = int(term[1])
+            a = a * b
+            b = b - 1
+            if b == 1:
+                b = "x"
+            elif b == 0:
+                b = ""
+            else:
+                b = f"x^{b}"
+            if a == 1:
+                a = ""
+            term = f"{a}{b}"
+            new_expression.append(term)
+            # Special cases
+        elif term == "log x" or term == "log(x)":
+            new_expression.append("1/x")
+        elif term == "sin x" or term == "sin(x)":
+            new_expression.append("cos(x)")
+        elif term == "tan x" or term == "tan(x)":
+            new_expression.append("sec^2(x)")
+        elif term == "sinh x" or term == "sinh(x)":
+            new_expression.append("cosh(x)")
+        elif term == "cosh x" or term == "cosh(x)":
+            new_expression.append("sinh(x)")
+        elif term == "tanh x" or term == "tanh(x)":
+            new_expression.append("sech^2(x)")
+        elif term == "-acos x" or term == "-acos(x)" or term == "acos x" or term == "acos(x)" or term == "asin(x)" or term == "asin x":
+            new_expression.append("1/√(1-x^2)")
+        elif term == "atan x" or term == "atan(x)":
+            new_expression.append("1/(x^2-1)")
+        elif term == "acosh x" or term == "acosh(x)":
+            new_expression.append("1/√(x^2+1)*√(x^2-1)")
+        elif term == "asinh x" or term == "asinh(x)":
+            new_expression.append("1/√(x^2+1)")
+        elif term == "atanh x" or term == "atanh(x)":
+            new_expression.append("1/(1 - x^2)")
+        elif term == "sec^2 x" or term == "sec^2(x)":
+            new_expression.append("2*tan(x)*sec^2(x)")
+        elif term == "sech^2 x" or term == "sech^2(x)":
+            new_expression.append("-2*tanh(x)*sech^2(x)")
+        elif term == "e^x" or term == "e**x":
+            new_expression.append("e^x")
+        elif term == "1/x":
+            new_expression.append("-1/x^2")
+        elif term == "cos x" or term == "cos(x)":
+            new_expression.append("sin(x)")
+        elif term == "-log x" or term == "-log(x)":
+            new_expression.append("-1/x")
+        elif term == "-sin x" or term == "-sin(x)":
+            new_expression.append("-cos(x)")
+        elif term == "-tan x" or term == "-tan(x)":
+            new_expression.append("-sec^2(x)")
+        elif term == "-sinh x" or term == "-sinh(x)":
+            new_expression.append("-cosh(x)")
+        elif term == "-cosh x" or term == "-cosh(x)":
+            new_expression.append("-sinh(x)")
+        elif term == "-tanh x" or term == "-tanh(x)":
+            new_expression.append("-sech^2(x)")
+        elif term == "-asin(x)" or term == "-asin x":
+            new_expression.append("-1/√(1-x^2)")
+        elif term == "-atan x" or term == "-atan(x)":
+            new_expression.append("-1/(x^2+1)")
+        elif term == "-acosh x" or term == "-acosh(x)":
+            new_expression.append("-1/√(x^2+1)*√(x^2-1)")
+        elif term == "-asinh x" or term == "-asinh(x)":
+            new_expression.append("-1/√(x^2+1)")
+        elif term == "-atanh x" or term == "-atanh(x)":
+            new_expression.append("1/(x^2-1)")
+        elif term == "-sec^2 x" or term == "-sec^2(x)":
+            new_expression.append("-2*tan(x)*sec^2(x)")
+        elif term == "-sech^2 x" or term == "-sech^2(x)":
+            new_expression.append("2*tanh(x)*sech^2(x)")
+        elif term == "-e^x" or term == "-e**x":
+            new_expression.append("-e^x")
+        elif term == "-1/x":
+            new_expression.append("1/x^2")
+        elif term == "-cos x" or term == "-cos(x)":
+            new_expression.append("sin(x)")
+        elif re.findall(r'\d+(\*?)x', term) != []:
+            # Regular slope
+            if "*" in term:
+                new_expression.append(term[:-2])
+            else:
+                new_expression.append(term[:-1])
+    new_expression_str = ""
+    for term in new_expression:
+        if new_expression_str == "":
+            new_expression_str = term
+        else:
+            if term[0] == "-":
+                new_expression_str = new_expression_str + term
+            else:
+                new_expression_str = new_expression_str + "+" + term
+    ans = f"d/dx ({og_expression}) = " + new_expression_str
+    print(f"d/dx ({og_expression}) = " + new_expression_str)
 
 
 def integrate(expression):
-  og_expression = expression
-  expression = parseEq(expression)
-  new_expression = []
-  for term in expression:
-      if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
-          # Inverse power rule
-          term = term.split("x^")
-          if term[0] == "":
-              a = 1
-          else:
-              a = int(term[0])
-          b = int(term[1])
-          a = a / (b + 1)
-          b = b + 1
-          if b == 1:
-              b = "x"
-          elif b == 0:
-              b = ""
-          else:
-              b = f"x^{b}"
-          if a == 1:
-              a = ""
-          term = f"{a}{b}"
-          new_expression.append(term)
-      elif re.match(r'(\-?)\d+x', term):
-          print(term)
-          term = term.replace("x", "")
-          if term == "":
-              new_expression.append("x^2/2")
-          else:
-              new_expression.append(f"{int(term) / 2}x^2")
-      # Cases that can't be solved by the inverse power rule
-      elif term == "log x" or term == "log(x)":
-          new_expression.append("x(log(x)-1)")
-      elif term == "sin x" or term == "sin(x)":
-          new_expression.append("-cos(x)")
-      elif term == "e^x" or term == "e**x":
-          new_expression.append("e^x")
-      elif term == "1/x":
-          new_expression.append("log(x)")
-      elif term == "cos x" or term == "cos(x)":
-          new_expression.append("sin(x)")
-      elif term == "tan x" or term == "tan(x)":
-        new_expression.append("-log(cos((x))")
-      elif term == "sinh x" or term == "sinh(x)":
-        new_expression.append("cosh(x)")
-      elif term == "cosh x" or term == "cosh(x)":
-        new_expression.append("sinh(x)")
-      elif term == "tanh x" or term == "tanh(x)":
-        new_expression.append("log(cosh(x))")
-      elif term == "acos x" or term == "acos(x)":
-        new_expression.append("x*acos(x)-√(1-x^2)")
-      elif term == "asin x" or term == "asin(x)":
-        new_expression.append("√(1-x^2)+x*asin(x)")
-      elif term == "atan x" or term == "atan(x)":
-        new_expression.append("x*atan(x)-0.5*log(x^2+1)")
-      elif term == "acosh x" or term == "acosh(x)":
-        new_expression.append("x*asinh(x)-√(x^2+1)*√(x^2-1)")
-      elif term == "asinh x" or term == "asinh(x)":
-        new_expression.append("x*asinh(x)-√(x^2+1)")
-      elif term == "atanh x" or term == "atanh(x)":
-        new_expression.append("0.5*log(1-x^2)+x*atanh(x)")
-      elif term == "sec^2 x" or term == "sec^2(x)":
-          new_expression.append("tan(x)")
-      elif term == "sech^2 x" or term == "sech^2(x)":
-          new_expression.append("tanh(x)")
-      elif term == "-acos x" or term == "-acos(x)":
-          new_expression.append("√(1-x^2)-x*acos(x)")
-      elif term == "-log x" or term == "-log(x)":
-          new_expression.append("x-x*log(x)")
-      elif term == "-sin x" or term == "-sin(x)":
-          new_expression.append("cos(x)")
-      elif term == "-tan x" or term == "-tan(x)":
-        new_expression.append("log(cos(x))")
-      elif term == "-sinh x" or term == "-sinh(x)":
-        new_expression.append("-cosh(x)")
-      elif term == "-cosh x" or term == "-cosh(x)":
-        new_expression.append("-sinh(x)")
-      elif term == "-tanh x" or term == "-tanh(x)":
-        new_expression.append("-log(cos(x))")
-      elif term == "-asin(x)" or term == "-asin x":
-        new_expression.append("-√(1-x^2)-x*asin(x)")
-      elif term == "-atan x" or term == "-atan(x)":
-        new_expression.append("0.5*log(x^2+1)-x*atan(x)")
-      elif term == "-acosh x" or term == "-acosh(x)":
-        new_expression.append("√(x^2+1)*√(x^2-1)-x*acosh(x)")
-      elif term == "-asinh x" or term == "-asinh(x)":
-        new_expression.append("√(x^2+1)-x*asinh(x)")
-      elif term == "-atanh x" or term == "-atanh(x)":
-        new_expression.append("-0.5*log(1-x^2)-x*atanh(x)")
-      elif term == "-sec^2 x" or term == "-sec^2(x)":
-          new_expression.append("-tan(x)")
-      elif term == "-sech^2 x" or term == "-sech^2(x)":
-          new_expression.append("-tanh(x)")
-      elif term == "-e^x" or term == "-e**x":
-          new_expression.append("-e^x")
-      elif term == "-1/x":
-          new_expression.append("-log(x)")
-      elif term == "-cos x" or term == "-cos(x)":
-          new_expression.append("-sin(x)")
-      elif re.match(r'(\-?)\d+', term):
-          # Reverse slope
-          new_expression.append(term + "x")
-  # Combine all the terms into a single string
-  new_expression_str = ""
-  for term in new_expression:
-      if new_expression_str == "":
-          new_expression_str = term
-      else:
-          if term[0] == "-":
-              new_expression_str = new_expression_str + term
-          else:
-              new_expression_str = new_expression_str + "+" + term
-  print(f"∫ ({og_expression}) dx = {new_expression_str} + C")
+    global ans, ans_alt
+    og_expression = expression
+    expression = parseEq(expression)
+    new_expression = []
+    for term in expression:
+        if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
+            # Inverse power rule
+            term = term.split("x^")
+            if term[0] == "":
+                a = 1
+            else:
+                a = int(term[0])
+            b = int(term[1])
+            a = a / (b + 1)
+            b = b + 1
+            if b == 1:
+                b = "x"
+            elif b == 0:
+                b = ""
+            else:
+                b = f"x^{b}"
+            if a == 1:
+                a = ""
+            term = f"{a}{b}"
+            new_expression.append(term)
+        elif re.match(r'(\-?)\d+x', term):
+            print(term)
+            term = term.replace("x", "")
+            if term == "":
+                new_expression.append("x^2/2")
+            else:
+                new_expression.append(f"{int(term) / 2}x^2")
+        # Cases that can't be solved by the inverse power rule
+        elif term == "log x" or term == "log(x)":
+            new_expression.append("x(log(x)-1)")
+        elif term == "sin x" or term == "sin(x)":
+            new_expression.append("-cos(x)")
+        elif term == "e^x" or term == "e**x":
+            new_expression.append("e^x")
+        elif term == "1/x":
+            new_expression.append("log(x)")
+        elif term == "cos x" or term == "cos(x)":
+            new_expression.append("sin(x)")
+        elif term == "tan x" or term == "tan(x)":
+            new_expression.append("-log(cos((x))")
+        elif term == "sinh x" or term == "sinh(x)":
+            new_expression.append("cosh(x)")
+        elif term == "cosh x" or term == "cosh(x)":
+            new_expression.append("sinh(x)")
+        elif term == "tanh x" or term == "tanh(x)":
+            new_expression.append("log(cosh(x))")
+        elif term == "acos x" or term == "acos(x)":
+            new_expression.append("x*acos(x)-√(1-x^2)")
+        elif term == "asin x" or term == "asin(x)":
+            new_expression.append("√(1-x^2)+x*asin(x)")
+        elif term == "atan x" or term == "atan(x)":
+            new_expression.append("x*atan(x)-0.5*log(x^2+1)")
+        elif term == "acosh x" or term == "acosh(x)":
+            new_expression.append("x*asinh(x)-√(x^2+1)*√(x^2-1)")
+        elif term == "asinh x" or term == "asinh(x)":
+            new_expression.append("x*asinh(x)-√(x^2+1)")
+        elif term == "atanh x" or term == "atanh(x)":
+            new_expression.append("0.5*log(1-x^2)+x*atanh(x)")
+        elif term == "sec^2 x" or term == "sec^2(x)":
+            new_expression.append("tan(x)")
+        elif term == "sech^2 x" or term == "sech^2(x)":
+            new_expression.append("tanh(x)")
+        elif term == "-acos x" or term == "-acos(x)":
+            new_expression.append("√(1-x^2)-x*acos(x)")
+        elif term == "-log x" or term == "-log(x)":
+            new_expression.append("x-x*log(x)")
+        elif term == "-sin x" or term == "-sin(x)":
+            new_expression.append("cos(x)")
+        elif term == "-tan x" or term == "-tan(x)":
+            new_expression.append("log(cos(x))")
+        elif term == "-sinh x" or term == "-sinh(x)":
+            new_expression.append("-cosh(x)")
+        elif term == "-cosh x" or term == "-cosh(x)":
+            new_expression.append("-sinh(x)")
+        elif term == "-tanh x" or term == "-tanh(x)":
+            new_expression.append("-log(cos(x))")
+        elif term == "-asin(x)" or term == "-asin x":
+            new_expression.append("-√(1-x^2)-x*asin(x)")
+        elif term == "-atan x" or term == "-atan(x)":
+            new_expression.append("0.5*log(x^2+1)-x*atan(x)")
+        elif term == "-acosh x" or term == "-acosh(x)":
+            new_expression.append("√(x^2+1)*√(x^2-1)-x*acosh(x)")
+        elif term == "-asinh x" or term == "-asinh(x)":
+            new_expression.append("√(x^2+1)-x*asinh(x)")
+        elif term == "-atanh x" or term == "-atanh(x)":
+            new_expression.append("-0.5*log(1-x^2)-x*atanh(x)")
+        elif term == "-sec^2 x" or term == "-sec^2(x)":
+            new_expression.append("-tan(x)")
+        elif term == "-sech^2 x" or term == "-sech^2(x)":
+            new_expression.append("-tanh(x)")
+        elif term == "-e^x" or term == "-e**x":
+            new_expression.append("-e^x")
+        elif term == "-1/x":
+            new_expression.append("-log(x)")
+        elif term == "-cos x" or term == "-cos(x)":
+            new_expression.append("-sin(x)")
+        elif re.match(r'(\-?)\d+', term):
+            # Reverse slope
+            new_expression.append(term + "x")
+    # Combine all the terms into a single string
+    new_expression_str = ""
+    for term in new_expression:
+        if new_expression_str == "":
+            new_expression_str = term
+        else:
+            if term[0] == "-":
+                new_expression_str = new_expression_str + term
+            else:
+                new_expression_str = new_expression_str + "+" + term
+    ans = f"∫ ({og_expression}) dx = {new_expression_str} + C"
+    print(f"∫ ({og_expression}) dx = {new_expression_str} + C")
 
 
 def scale_vector(scalar, vector):
-    return list(map(lambda x: x * scalar, vector))
+    global ans, ans_alt
+    ans = str(list(map(lambda x: x * scalar, vector)))
+    return ans
 
 
 def dot_product(vector1, vector2):
-    return sum([a * b for a, b in zip(vector1, vector2)])
+    global ans, ans_alt
+    ans = sum([a * b for a, b in zip(vector1, vector2)])
+    return ans
 
 
 def matrix_parse(matrix):
     matrix = matrix.split(";")
     matrixlist = []
+
     def eval_(node):
         if isinstance(node, ast.Constant):  # <number>
             return node.value
@@ -547,6 +584,7 @@ def matrix_parse(matrix):
             return operators[type(node.op)](eval_(node.operand))
         else:
             raise TypeError(node)
+
     for row in matrix:
         if row[0] == "[":
             row = row[1:]
@@ -554,7 +592,7 @@ def matrix_parse(matrix):
             row = row[:len(row) - 1]
         row = "[" + row + "]"
         row = list(map(lambda x: eval_(ast.parse(x, mode='eval').body), row.strip('][').split(', ')))
-        #row = list(map(lambda x: complex(x) if "j" in x else int(x), row))
+        # row = list(map(lambda x: complex(x) if "j" in x else int(x), row))
         matrixlist.append(row)
     return matrixlist
 
@@ -573,17 +611,31 @@ def verify_square(input_matrix):
         return True
 
 
+def format_mat(mat):
+    string = "["
+    for i in mat:
+        for j in i:
+            string += f"{j}, "
+        string = string[:len(string) - 2]
+        string += ";"
+    string = string[:len(string) - 1]
+    return f"[{string}]"
+
+
 def transpose(matrix):
+    global ans, ans_alt
     new_matrix = []
     for col in range(len(matrix[0])):
         new_matrix.append([])
     for i in range(len(new_matrix)):
         for row in matrix:
             new_matrix[i].append(row[i])
+    ans = format_mat(new_matrix)
     return new_matrix
 
 
 def fft(x):
+    global ans, ans_alt
     N = len(x)
 
     if N == 1:
@@ -598,10 +650,12 @@ def fft(x):
         w = cmath.exp(-2j * math.pi * k / N)
         transformed_x[k] = even[k] + w * odd[k]
         transformed_x[k + N // 2] = even[k] - w * odd[k]
+    ans = transformed_x
     return transformed_x
 
 
 def ifft(x):
+    global ans, ans_alt
     N = len(x)
 
     if N == 1:
@@ -616,6 +670,7 @@ def ifft(x):
         w = cmath.exp(2j * math.pi * k / N)
         transformed_x[k] = (even[k] + w * odd[k]) / N
         transformed_x[k + N // 2] = (even[k] - w * odd[k]) / N
+    ans = transformed_x
     return transformed_x
 
 
@@ -632,7 +687,9 @@ def pretty_print_matrix(matrix):
 
 
 def conjugate(num):
+    global ans, ans_alt
     new_matrix = [[x.conjugate() if type(x) == complex else x for x in row] for row in matrix]
+    ans = format_mat(new_matrix)
     return new_matrix
 
 
@@ -646,7 +703,9 @@ def eval_(node):
     else:
         raise TypeError(node)
 
+
 def matrix_multiplication(A, B):
+    global ans, ans_alt
     # Check if the matrices can be multiplied
     if len(A[0]) != len(B):
         raise ValueError("Matrix dimensions are not compatible for multiplication")
@@ -657,8 +716,9 @@ def matrix_multiplication(A, B):
         for j in range(len(B[0])):
             for k in range(len(B)):
                 result[i][j] += A[i][k] * B[k][j]
-
+    ans = format_mat(result)
     return result
+
 
 ascii_art = """  ______                   __                                __                          
  /      \                 /  |                              /  |                         
@@ -674,13 +734,15 @@ $$    $$/ $$    $$/ $$    $$ |$$       |$$    $$ |$$       |$$    $$/ $$ |     $
                                          $$$$$$/                                         """
 
 print(ascii_art)
-print("Created in 2023 by Samir")
+print("Created in 2023 by Samir R")
 
 while True:
     cmd = input("COMMAND>")
     if cmd == "SOLVE":
         equation = input("EQUATION TO BE SOLVED>")
         solve(equation)
+    elif cmd == "":
+        continue
     elif cmd == "DIFF":
         equation = input("EXPRESSION TO BE DIFFERENTIATED>")
         derivative(equation)
@@ -703,16 +765,17 @@ while True:
 
         vectorB = input("VECTOR B>")
         vectorB = list(map(float, vectorB.strip('][').split(', ')))
-
+        ans = str(blas.saxpy(vectorA, vectorB))
         print(blas.saxpy(vectorA, vectorB))
     elif cmd == "EIGVAL":
         matrix = input("Matrix>")
         matrix = matrix_parse(matrix)
         eigenvalues = lapack.sgeev(matrix)
+        ans = str(eigenvalues)
         print("EIGENVALUES:")
         for eigenvalue in eigenvalues:
             print(eigenvalue)
-    elif cmd == "TRANSP":
+    elif cmd == "T":
         matrix = input("Matrix>")
         matrix = matrix_parse(matrix)
         matrix = transpose(matrix)
@@ -731,10 +794,12 @@ while True:
     elif cmd == "SUM":
         vector = input("VECTOR>")
         vector = list(map(int, vector.strip('][').split(', ')))
+        ans = sum(vector)
         print(sum(vector))
     elif cmd == "AVG":
         vector = input("VECTOR>")
         vector = list(map(int, vector.strip('][').split(', ')))
+        ans = sum(vector) / len(vector)
         print(sum(vector) / len(vector))
     elif cmd == "WORD":
         word = input("WORD>")
@@ -747,147 +812,149 @@ while True:
             i += 1
             print(f"{i}. - {row}")
     elif cmd == "EXP":
-
-
-
         expression = input("EXPONENT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.exp(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = str([cmath.exp(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.exp(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.exp(i) for i in j] for j in expression])
         else:
-            print(cmath.exp(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.exp(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "SQRT":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.sqrt(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = str([cmath.sqrt(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.sqrt(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.sqrt(i) for i in j] for j in expression])
         else:
-            print(cmath.sqrt(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.sqrt(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "SIN":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.sin(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.sin(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.sin(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.sin(i) for i in j] for j in expression])
         else:
-            print(cmath.sin(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.sin(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "COS":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.cos(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.cos(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.cos(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.cos(i) for i in j] for j in expression])
         else:
-            print(cmath.cos(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.cos(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "TAN":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.tan(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.tan(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.tan(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.tan(i) for i in j] for j in expression])
         else:
-            print(cmath.tan(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.tan(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "ATAN":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.atan(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.atan(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.atan(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.atan(i) for i in j] for j in expression])
         else:
-            print(cmath.atan(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.atan(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "ASIN":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.asin(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.asin(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.asin(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.asin(i) for i in j] for j in expression])
         else:
-            print(cmath.asin(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.asin(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "ACOS":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.acos(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.acos(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.acos(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.acos(i) for i in j] for j in expression])
         else:
-            print(cmath.acos(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.acos(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "LOG":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.log(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.log(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.log(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.log(i) for i in j] for j in expression])
         else:
-            print(cmath.log(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.log(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "ABS":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([abs(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [abs(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[abs(i) for i in j] for j in expression])
             pretty_print_matrix([[abs(i) for i in j] for j in expression])
         else:
-            print(abs(eval_(ast.parse(expression, mode='eval').body)))
+            ans = abs(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "DETR":
         matrix = input("MATRIX>")
         matrix = matrix_parse(matrix)
         if verify_square(matrix):
             if len(matrix) == 2:
                 determinant = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]
+                ans = determinant
                 print(determinant)
             elif len(matrix) == 3:
                 # aei+bfg+cdh-ceg-bdi-afh
                 determinant = matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0] + \
                               matrix[0][2] * matrix[1][0] * matrix[2][1] - matrix[0][2] * matrix[1][1] * matrix[2][0] - \
                               matrix[0][1] * matrix[1][0] * matrix[2][2] - matrix[0][0] * matrix[1][2] * matrix[2][1]
+                ans = determinant
                 print(determinant)
             else:
                 print("ERROR: CAN ONLY HANDLE 2x2 or 3x3 MATRICES")
@@ -896,9 +963,11 @@ while True:
     elif cmd == "CONJ":
         matrix = input("MATRIX>")
         matrix = matrix_parse(matrix)
+        ans = format_mat(conjugate(matrix))
         pretty_print_matrix(conjugate(matrix))
     elif cmd == "ROUND":
         number = round(float(input("NUMBER>")))
+        ans = number
         print(number)
     elif cmd == "EYE":
         size = input("LENGTH>")
@@ -911,19 +980,19 @@ while True:
                 else:
                     row.append(0)
             id_matrix.append(row)
+        ans = format_mat(id_matrix)
         pretty_print_matrix(id_matrix)
     elif cmd == "EVAL":
-
-
-
         expression = input("EXPRESSION>")
-        print(eval_(ast.parse(expression, mode='eval').body))
+        ans = eval_(ast.parse(expression, mode='eval').body)
+        print(ans)
     elif cmd == "PROD":
         vector = input("VECTOR>")
         vector = list(map(int, vector.strip('][').split(', ')))
         prod = vector[0]
         for element in vector[1:]:
             prod = prod * element
+        ans = prod
         print(prod)
     elif cmd == "ELEMENT":
         number = input("ATOMIC NUMBER>")
@@ -955,141 +1024,160 @@ while True:
         matrix = matrix_parse(matrix)
         LU, PIV, _ = lapack.sgetrf(matrix)
         inv_a = lapack.sgetri(LU, PIV)
+        ans = format_mat(inv_a)
         pretty_print_matrix(inv_a)
     elif cmd == "SINH":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.sinh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.sinh(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.sinh(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.sinh(i) for i in j] for j in expression])
         else:
-            print(cmath.sinh(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.sinh(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "COSH":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.cosh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.cosh(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.cosh(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.cosh(i) for i in j] for j in expression])
         else:
-            print(cmath.cosh(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.cosh(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "TANH":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.tanh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.tanh(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.tanh(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.tanh(i) for i in j] for j in expression])
         else:
-            print(cmath.tanh(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.tanh(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "ATANH":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.atanh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.atanh(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.atanh(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.atanh(i) for i in j] for j in expression])
         else:
-            print(cmath.atanh(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.atanh(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "ASINH":
-
-
-
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.asinh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.asinh(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.asinh(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.asinh(i) for i in j] for j in expression])
         else:
-            print(cmath.asinh(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.asinh(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "ACOSH":
 
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([cmath.acosh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [cmath.acosh(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[cmath.acosh(i) for i in j] for j in expression])
             pretty_print_matrix([[cmath.acosh(i) for i in j] for j in expression])
         else:
-            print(cmath.acosh(eval_(ast.parse(expression, mode='eval').body)))
+            ans = cmath.acosh(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "SEC":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([1 / cmath.cos(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [1 / cmath.cos(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[1 / cmath.cos(i) for i in j] for j in expression])
             pretty_print_matrix([[1 / cmath.cos(i) for i in j] for j in expression])
         else:
-            print(1 / cmath.cos(eval_(ast.parse(expression, mode='eval').body)))
+            ans = 1 / cmath.cos(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "SECH":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([1 / cmath.cosh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [1 / cmath.cosh(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[1 / cmath.cosh(i) for i in j] for j in expression])
             pretty_print_matrix([[1 / cmath.cosh(i) for i in j] for j in expression])
         else:
-            print(1 / cmath.cosh(eval_(ast.parse(expression, mode='eval').body)))
+            ans = 1 / cmath.cosh(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "CSC":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([1 / cmath.sin(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [1 / cmath.sin(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[1 / cmath.sin(i) for i in j] for j in expression])
             pretty_print_matrix([[1 / cmath.sin(i) for i in j] for j in expression])
         else:
-            print(1 / cmath.sin(eval_(ast.parse(expression, mode='eval').body)))
+            ans = 1 / cmath.sin(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "CSCH":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([1 / cmath.sinh(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [1 / cmath.sinh(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[1 / cmath.sinh(i) for i in j] for j in expression])
             pretty_print_matrix([[1 / cmath.sinh(i) for i in j] for j in expression])
         else:
-            print(1 / cmath.sinh(eval_(ast.parse(expression, mode='eval').body)))
+            ans = 1 / cmath.sinh(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "NORM":
         # Euclidean Normalization
         mode = input("1, 2, OR INFINITY NORM>")
         if mode == "1":
             vector = input("VECTOR>").strip('][').split(', ')
             vector = [abs(eval_(ast.parse(i, mode='eval').body)) for i in vector]
-            print(sum(vector))
+            ans = sum(vector)
+            print(ans)
         elif mode == "INFINITY":
             vector = input("VECTOR>").strip('][').split(', ')
             vector = [abs(eval_(ast.parse(i, mode='eval').body)) for i in vector]
-            print(max(vector))
+            ans = max(vector)
+            print(ans)
         elif mode == "2":
             vector = input("VECTOR>").strip('][').split(', ')
             vector = [eval_(ast.parse(i, mode='eval').body) for i in vector]
             radicand = 0
             for j in vector:
                 radicand += j ** 2
-            print(math.sqrt(radicand))
+            ans = math.sqrt(radicand)
+            print(ans)
     elif cmd == "MXV":
         matrix = input("MATRIX>")
         matrix = matrix_parse(matrix)
@@ -1097,37 +1185,45 @@ while True:
         vector = vector.strip('][').split(', ')
         vector = [eval_(ast.parse(i, mode='eval').body) for i in vector]
         nvec = blas.sgemv(1, matrix, vector)
-        print(f"RESULT: {str(nvec)}")
+        ans = str(nvec)
+        print(f"RESULT: {ans}")
     elif cmd == "ONES":
         n = int(input("N>"))
         m = int(input("M>"))
         ones = [[1 for i in range(m)] for j in range(n)]
+        ans = format_mat(ones)
         pretty_print_matrix(ones)
     elif cmd == "ZEROES":
-        n = input("N>")
-        m = input("M>")
+        n = int(input("N>"))
+        m = int(input("M>"))
         zeroes = [[1 for i in range(m)] for j in range(n)]
+        ans = format_mat(zeroes)
         pretty_print_matrix(zeroes)
     elif cmd == "UTRI":
         matrix = input("MATRIX>")
         matrix = matrix_parse(matrix)
         new_matrix = [[matrix[i][j] if j >= i else 0 for j in range(len(matrix[i]))] for i in range(len(matrix))]
+        ans = format_mat(new_matrix)
         pretty_print_matrix(new_matrix)
     elif cmd == "LTRI":
         matrix = input("MATRIX>")
         matrix = matrix_parse(matrix)
         new_matrix = [[matrix[i][j] if j <= i else 0 for j in range(len(matrix[i]))] for i in range(len(matrix))]
+        ans = format_mat(new_matrix)
         pretty_print_matrix(new_matrix)
     elif cmd == "FAC":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            print([math.factorial(eval_(ast.parse(i, mode='eval').body)) for i in expression])
+            ans = [math.factorial(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
+            ans = format_mat([[math.factorial(i) for i in j] for j in expression])
             pretty_print_matrix([[math.factorial(i) for i in j] for j in expression])
         else:
-            print(math.factorial(eval_(ast.parse(expression, mode='eval').body)))
+            ans = math.factorial(eval_(ast.parse(expression, mode='eval').body))
+            print(ans)
     elif cmd == "RAT":
         num = input("DECIMAL TO BE RATIONALIZED>")
         num = num.replace(".", "")
@@ -1135,11 +1231,12 @@ while True:
         expr = f"{num[0]} + 1/"
         num = num[1:]
         for i in range(len(num)):
-            if i != len(num)-1:
+            if i != len(num) - 1:
                 expr += f"({num[i]} + 1/"
             else:
                 expr += f"({num[i]}"
-        expr += ")"*(len(num)-1)
+        expr += ")" * (len(num) - 1)
+        ans = expr
         print(expr)
     elif cmd == "DIST":
         dims = input("DIMENSIONS(2 OR 3)>")
@@ -1148,7 +1245,8 @@ while True:
             y1 = float(input("Y1>"))
             x2 = float(input("X2>"))
             y2 = float(input("Y2>"))
-            print(math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2))
+            ans = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+            print(ans)
         elif dims == "3":
             x1 = float(input("X1>"))
             y1 = float(input("Y1>"))
@@ -1156,7 +1254,8 @@ while True:
             x2 = float(input("X2>"))
             y2 = float(input("Y2>"))
             z2 = float(input("Z2>"))
-            print(math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2))
+            ans = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
+            print(ans)
         else:
             print("ERROR: DIMS NOT VALID")
     elif cmd == "PATH":
@@ -1167,12 +1266,13 @@ while True:
             dist = 0
             x1 = float(input("X1>"))
             y1 = float(input("Y1>"))
-            for i in range(nodes-1):
-                x2 = float(input(f"X{i+2}>"))
-                y2 = float(input(f"Y{i+2}>"))
+            for i in range(nodes - 1):
+                x2 = float(input(f"X{i + 2}>"))
+                y2 = float(input(f"Y{i + 2}>"))
                 dist += math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
-                x1=x2
-                y1=y2
+                x1 = x2
+                y1 = y2
+            ans = str(dist)
             print("Dist:" + str(dist))
         elif dims == "3":
             dist = 0
@@ -1180,12 +1280,13 @@ while True:
             y1 = float(input("Y1>"))
             z1 = float(input("Z1>"))
             for i in range(nodes):
-                x2 = float(input(f"X{i+2}>"))
-                y2 = float(input(f"Y{i+2}>"))
-                z2 = float(input(f"Z{i+2}>"))
+                x2 = float(input(f"X{i + 2}>"))
+                y2 = float(input(f"Y{i + 2}>"))
+                z2 = float(input(f"Z{i + 2}>"))
                 dist += math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
-                x1=x2
-                y1=y2
+                x1 = x2
+                y1 = y2
+            ans = str(dist)
             print("Dist:" + str(dist))
         else:
             print("ERROR: DIMS NOT VALID")
@@ -1193,91 +1294,101 @@ while True:
         dims = input("DIMENSIONS(2 OR 3)>")
         nodes = int(input("Number of points on the shape: "))
         if dims == "2":
-          x = []
-          y = []
-          trans_x = float(input("ΔX>"))
-          trans_y = float(input("ΔY>"))
-          x.append(float(input("X1>")))
-          y.append(float(input("Y1>")))
-          for i in range(nodes-1):
-            x.append(float(input(f"X{i+2}>")))
-            y.append(float(input(f"Y{i+2}>")))
-          print("TRANSLATED POINTS:")
-          for i in range(len(x)):
-            x[i] += trans_x
-            y[i] += trans_y
-            print(f"({x[i]}, {y[i]})")
+            x = []
+            y = []
+            trans_x = float(input("ΔX>"))
+            trans_y = float(input("ΔY>"))
+            x.append(float(input("X1>")))
+            y.append(float(input("Y1>")))
+            for i in range(nodes - 1):
+                x.append(float(input(f"X{i + 2}>")))
+                y.append(float(input(f"Y{i + 2}>")))
+            print("TRANSLATED POINTS:")
+            ans = "["
+            for i in range(len(x)):
+                x[i] += trans_x
+                y[i] += trans_y
+                print(f"({x[i]}, {y[i]})")
+                ans += f"{x[i]}, {y[i]}; "
+            ans = ans[:-2] + "]"
         elif dims == "3":
-          x = []
-          y = []
-          z = []
-          trans_x = float(input("ΔX>"))
-          trans_y = float(input("ΔY>"))
-          trans_z = float(input("ΔZ>"))
-          x.append(float(input("X1>")))
-          y.append(float(input("Y1>")))
-          z.append(float(input("Z1>")))
-          for i in range(nodes-1):
-            x.append(float(input(f"X{i+2}>")))
-            y.append(float(input(f"Y{i+2}>")))
-            z.append(float(input(f"Z{i+2}>")))
-          print("TRANSLATED POINTS:")
-          for i in range(len(x)):
-            x[i] += trans_x
-            y[i] += trans_y
-            z[i] += trans_z
-            print(f"({x[i]}, {y[i]}, {z[i]})")
+            x = []
+            y = []
+            z = []
+            trans_x = float(input("ΔX>"))
+            trans_y = float(input("ΔY>"))
+            trans_z = float(input("ΔZ>"))
+            x.append(float(input("X1>")))
+            y.append(float(input("Y1>")))
+            z.append(float(input("Z1>")))
+            for i in range(nodes - 1):
+                x.append(float(input(f"X{i + 2}>")))
+                y.append(float(input(f"Y{i + 2}>")))
+                z.append(float(input(f"Z{i + 2}>")))
+            print("TRANSLATED POINTS:")
+            for i in range(len(x)):
+                x[i] += trans_x
+                y[i] += trans_y
+                z[i] += trans_z
+                print(f"({x[i]}, {y[i]}, {z[i]})")
+                ans += f"{x[i]}, {y[i]}, {z[i]}; "
+            ans = ans[:-2] + "]"
         else:
-          print("ERROR: DIMS NOT VALID")
+            print("ERROR: DIMS NOT VALID")
     elif cmd == "PTOL":
-      #https://math.stackexchange.com/questions/1013230/how-to-find-coordinates-of-reflected-point
-      line = input("LINEAR EQUATION>")
-      x_coeff, y_coeff, const = simpStdForm(line)
-      x = float(input("X>"))
-      y = float(input("Y>"))
-      dist = abs((x_coeff*x)+(y_coeff*y)+const)/math.sqrt((x_coeff**2)+(y_coeff**2))
-      print(f"Distance: {dist}")
+        # https://math.stackexchange.com/questions/1013230/how-to-find-coordinates-of-reflected-point
+        line = input("LINEAR EQUATION>")
+        x_coeff, y_coeff, const = simpStdForm(line)
+        x = float(input("X>"))
+        y = float(input("Y>"))
+        dist = abs((x_coeff * x) + (y_coeff * y) + const) / math.sqrt((x_coeff ** 2) + (y_coeff ** 2))
+        ans = dist
+        print(f"Distance: {dist}")
     elif cmd == "SYST":
-      #Use elimination to solve the equation
-      eq1 = input("LINEAR EQUATION 1>")
-      eq2 = input("LINEAR EQUATION 2>")
-      x_coeff1, y_coeff1, const1 = simpStdForm(eq1)
-      x_coeff2, y_coeff2, const2 = simpStdForm(eq2)
-      y_coeff1_copy = y_coeff1
-      x_coeff1_copy = x_coeff1
-      const1_copy = const1
-      y_coeff1 *= -1 * y_coeff2
-      x_coeff1 *= -1 * y_coeff2
-      const1 *= -1 * y_coeff2
-      y_coeff2 *= y_coeff1_copy
-      x_coeff2 *= y_coeff1_copy
-      const2 *= y_coeff1_copy
-      x_coeff = x_coeff1 + x_coeff2
-      y_coeff = y_coeff1 + y_coeff2
-      const = const1 + const2
-      x = (const*-1)/x_coeff
-      y = (-1 * const1_copy - x_coeff1_copy*x)/y_coeff1_copy
-      print(f"x = {x}")
-      print(f"y = {y}")
+        # Use elimination to solve the equation
+        eq1 = input("LINEAR EQUATION 1>")
+        eq2 = input("LINEAR EQUATION 2>")
+        x_coeff1, y_coeff1, const1 = simpStdForm(eq1)
+        x_coeff2, y_coeff2, const2 = simpStdForm(eq2)
+        y_coeff1_copy = y_coeff1
+        x_coeff1_copy = x_coeff1
+        const1_copy = const1
+        y_coeff1 *= -1 * y_coeff2
+        x_coeff1 *= -1 * y_coeff2
+        const1 *= -1 * y_coeff2
+        y_coeff2 *= y_coeff1_copy
+        x_coeff2 *= y_coeff1_copy
+        const2 *= y_coeff1_copy
+        x_coeff = x_coeff1 + x_coeff2
+        y_coeff = y_coeff1 + y_coeff2
+        const = const1 + const2
+        x = (const * -1) / x_coeff
+        y = (-1 * const1_copy - x_coeff1_copy * x) / y_coeff1_copy
+        ans = x
+        ans_alt = y
+        print(f"x = {x}")
+        print(f"y = {y}")
     elif cmd == "DILA":
-      k = float(input("SCALE FACTOR>"))
-      px = float(input("PX>"))
-      py = float(input("PY>"))
-      nodes = int(input("NUMBER OF POINTS>"))
-      x = []
-      y = []
-      x.append(float(input("X1>")))
-      y.append(float(input("Y1>")))
-      for i in range(nodes-1):
-        x.append(float(input(f"X{i+2}>")))
-        y.append(float(input(f"Y{i+2}>")))
-      print("DIALATED POINTS:")
-      for i in range(len(x)):
-        dx = x[i]-px
-        dy = y[i]-py
-        x[i] = px+dx*k
-        y[i] = py+dy*k
-        print(f"({x[i]}, {y[i]})")
+        k = float(input("SCALE FACTOR>"))
+        px = float(input("PX>"))
+        py = float(input("PY>"))
+        nodes = int(input("NUMBER OF POINTS>"))
+        x = []
+        y = []
+        x.append(float(input("X1>")))
+        y.append(float(input("Y1>")))
+        for i in range(nodes - 1):
+            x.append(float(input(f"X{i + 2}>")))
+            y.append(float(input(f"Y{i + 2}>")))
+        print("DIALATED POINTS:")
+        for i in range(len(x)):
+            dx = x[i] - px
+            dy = y[i] - py
+            x[i] = px + dx * k
+            y[i] = py + dy * k
+            print(f"({x[i]}, {y[i]})")
+            ans += f"{x[i]}, {y[i]}; "
+        ans = ans[:-2] + "]"
     elif cmd == "HELP":
         help_str = f"""{ascii_art}
 A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1292,7 +1403,7 @@ Note that commands are case-sensitive.
  - DOTPR: Find the dot product of 2 vectors
  - ADDVEC: Find the sum of 2 vectors
  - EIGVAL: Find the eigenvalues of a matrix      
- - TRANSP: Transpose a matrix
+ - T: Transpose a matrix
  - FFT: Run a Discrete Fourier Transform on a signal
  - IFFT: Run an Inverse Fourier Transform on a signal
  - INTEGRATE: Integrate a function
@@ -1345,6 +1456,8 @@ Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
 The comma separates elements in the matrix, and the semicolon seperates rows. Matrix elements can be imaginary, complex, or real numbers. They can also be expressions, which will be simplified at runtime.
+Chaining Operations
+Similar to a calculator, we provide the constants ANS and ANS2. ANS stores the result of all mathematical operations, and ANS2 stores secondary answers(such as when solving a quadratic or system of equations). Just make your input to a command ANS or ANS2 to include the result of the previous operation.
 Data credits
  - [Movie Data](https://github.com/reisanar/datasets/blob/master/HollywoodMovies.csv)
  - [Elements Data](https://gist.github.com/GoodmanSciences/c2dd862cd38f21b0ad36b8f96b4bf1ee)

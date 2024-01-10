@@ -64,6 +64,8 @@ Note that commands are case-sensitive.
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
 The comma separates elements in the matrix, and the semicolon seperates rows. Matrix elements can be imaginary, complex, or real numbers. They can also be expressions, which will be simplified at runtime.
+## Chaining Operations
+Similar to a calculator, we provide the constants ANS and ANS2. ANS stores the result of all mathematical operations, and ANS2 stores secondary answers(such as when solving a quadratic or system of equations). Just make your input to a command ANS or ANS2 to include the result of the previous operation.
 ## Data credits
  - [Movie Data](https://github.com/reisanar/datasets/blob/master/HollywoodMovies.csv)
  - [Elements Data](https://gist.github.com/GoodmanSciences/c2dd862cd38f21b0ad36b8f96b4bf1ee)
