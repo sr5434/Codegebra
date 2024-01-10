@@ -1226,18 +1226,27 @@ while True:
             print(ans)
     elif cmd == "RAT":
         num = input("DECIMAL TO BE RATIONALIZED>")
-        num = num.replace(".", "")
-        num = list(num)
+        num = num.split(".")
         expr = f"{num[0]} + 1/"
-        num = num[1:]
-        for i in range(len(num)):
-            if i != len(num) - 1:
-                expr += f"({num[i]} + 1/"
-            else:
-                expr += f"({num[i]}"
-        expr += ")" * (len(num) - 1)
-        ans = expr
-        print(expr)
+        if len(num)-1 > 0:
+            r = num[0] + "." + num[1]
+            for i in range(3):
+                r = 1/float("0." + str(r).split(".")[1])
+                expr += f"({str(r).split(".")[0]} + 1/"
+                num = str(r).split(".")[1:]
+            """for i in range(len(num)):
+                if i != len(num) - 1:
+                    expr += f"({num[i]} + 1/"
+                else:
+                    expr += f"({num[i]}"
+            """
+            expr = expr[:-5]
+            expr += ")" * (3)
+            ans = expr
+            print(expr)
+        else:
+            ans = num[0]
+            print(ans)
     elif cmd == "DIST":
         dims = input("DIMENSIONS(2 OR 3)>")
         if dims == "2":
