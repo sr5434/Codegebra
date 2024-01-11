@@ -63,6 +63,7 @@ Note that commands are case-sensitive.
  - ```HILB```: An NxN Hilbert matrix
  - ```MAGIC```: Generate NxN magic matricies when N is odd
  - ```RCOND```: Reciprocal condition number of a matrix
+ - ```FACTOR```: Factor a quadratic
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
