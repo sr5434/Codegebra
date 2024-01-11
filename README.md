@@ -64,6 +64,7 @@ Note that commands are case-sensitive.
  - ```MAGIC```: Generate NxN magic matricies when N is odd
  - ```RCOND```: Reciprocal condition number of a matrix
  - ```FACTOR```: Factor a quadratic
+ - ```RANDM```: Generate an NxM matrix of random integers in a user defined range
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```

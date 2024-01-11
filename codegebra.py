@@ -1,4 +1,4 @@
-import math, cmath
+import math, cmath, random
 import re
 from scipy.linalg import lapack
 from scipy.linalg import blas
@@ -1279,6 +1279,14 @@ while True:
     zeroes = [[1 for i in range(m)] for j in range(n)]
     ans = format_mat(zeroes)
     pretty_print_matrix(zeroes)
+  elif cmd == "RANDM":
+    n = int(input("N>"))
+    m = int(input("M>"))
+    l1 = int(input("FLOOR>"))
+    l2 = int(input("CEILING>"))
+    mat = [[random.randint(l1, l2) for i in range(m)] for j in range(n)]
+    ans = format_mat(mat)
+    pretty_print_matrix(mat)
   elif cmd == "UTRI":
     matrix = input("MATRIX>")
     matrix = matrix_parse(matrix)
@@ -1696,6 +1704,7 @@ Note that commands are case-sensitive.
  - MAGIC: Generate NxN magic matricies when N is odd
  - RCOND: Reciprocal condition number of a matrix
  - FACTOR: Factor a quadratic
+ - RANDM: Generate an NxM matrix of random integers in a user defined range
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
