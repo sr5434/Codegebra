@@ -1725,6 +1725,24 @@ while True:
         else:
             ans = math.log10(eval_(ast.parse(expression, mode='eval').body))
             print(ans)
+    elif cmd == "ATAN2":
+        y = input("Y>")
+        x = input("X>")
+        if "[" in y and not ";" in y:
+            y = y.strip('][').split(', ')
+            x = x.strip('][').split(', ')
+            ans = [
+                math.atan2(eval_(ast.parse(i, mode='eval').body), eval_(ast.parse(j, mode='eval').body)) for i, j in zip(y, x)
+            ]
+            print(ans)
+        elif "[" in y and ";" in y:
+            y = matrix_parse(y)
+            x = matrix_parse(x)
+            ans = format_mat([[math.atan2(i, j) for i, j in zip(k, l)] for k, l in zip(y, x)])
+            pretty_print_matrix([[math.atan2(i, j) for i, j in zip(k, l)] for k, l in zip(y, x)])
+        else:
+            ans = math.atan2(eval_(ast.parse(y, mode='eval').body), eval_(ast.parse(x, mode='eval').body))
+            print(ans)
     elif cmd == "HELP":
         help_str = f"""{ascii_art}
 A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1800,6 +1818,7 @@ Note that commands are case-sensitive.
  - CPROD: Cumulative product of a vector
  - LOG2: Calculate the base 2 logarithm of an expression, vector, matrix, or number
  - LOG10: Calculate the base 10 logarithm of an expression, vector, matrix, or number
+ - ATAN2: Calculate the 4 quadrant arc tangent of an expression, vector, matrix, or number
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
