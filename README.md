@@ -65,6 +65,11 @@ Note that commands are case-sensitive.
  - ```RCOND```: Reciprocal condition number of a matrix
  - ```FACTOR```: Factor a quadratic
  - ```RANDM```: Generate an NxM matrix of random integers in a user defined range
+ - ```KRON```: Kronecker product of 2 matricies
+ - ```COT```: Calculate the cotangent of an expression, vector, matrix, or number
+ - ```LINSP```: Generate a linearly spaced vector
+ - ```CSUM```: Cumulative sum of a vector
+ - ```CPROD```: Cumulative product of a vector
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
