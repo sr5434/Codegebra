@@ -5,6 +5,7 @@ from scipy.linalg import blas
 import ast
 import operator as op
 import pandas as pd
+import math
 
 # supported operators(for safely running eval)
 operators = {
@@ -22,7 +23,7 @@ pattern = r'-?[0-9.]+\s*=\s*(?:[0-9.]+\s*\*\s*)?[0-9.]+\^\(x-[0-9.]+\)(?:\s*\+\s
 ans = ""
 ans_alt = ""
 input_prim = input  # move native input function so we can modify
-
+eps = 12 #Machine epsilon
 
 def input(prompt):
     global ans, ans_alt
@@ -756,6 +757,12 @@ def matrix_multiplication(A, B):
     ans = format_mat(result)
     return result
 
+def calc_angle(a, b, c):
+    #Calculate the m∠ABC
+    # https://muthu.co/using-the-law-of-cosines-and-vector-dot-product-formula-to-find-the-angle-between-three-points/
+    numerator = (a[0]-b[0])**2 + (a[1]-b[1])**2 + ((b[0]-c[0])**2+(b[1]-c[1])**2) - ((a[0]-c[0])**2+(a[1]-c[1])**2)
+    denominator = 2*(math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)*math.sqrt((b[0]-c[0])**2+(b[1]-c[1])**2))
+    return math.acos(numerator/denominator)*57.296
 
 ascii_art = """  ______                   __                                __                          
  /      \                 /  |                              /  |                         
@@ -839,7 +846,7 @@ while True:
         ans = sum(vector) / len(vector)
         print(sum(vector) / len(vector))
     elif cmd == "WORD":
-        word = input("WORD>")
+        word = input_prim("WORD>")
         df = pd.read_csv('english Dictionary.csv')
         rows = df.loc[df['word'] == word]
         print(f"DEFINITION OF {word}")
@@ -1650,6 +1657,7 @@ while True:
                     new_sect.extend([item*j for item in row])
                 new_mat.append(new_sect)
                 new_sect = []
+        ans = format_mat(new_mat)
         pretty_print_matrix(new_mat)
     elif cmd == "COT":
         expression = input("INPUT>")
@@ -1743,6 +1751,49 @@ while True:
         else:
             ans = math.atan2(eval_(ast.parse(y, mode='eval').body), eval_(ast.parse(x, mode='eval').body))
             print(ans)
+    elif cmd == "TRI":
+        print("Point A")
+        x1 = float(input("X>"))
+        y1 = float(input("Y>"))
+        print("Point B")
+        x2 = float(input("X>"))
+        y2 = float(input("Y>"))
+        print("Point C")
+        x3 = float(input("X>"))
+        y3 = float(input("Y>"))
+        a = [x1, y1]
+        b = [x2, y2]
+        c = [x3, y3]
+        # Verticies
+        Va = round(calc_angle(b, a, c), eps)
+        Vb = round(calc_angle(a, b, c), eps)
+        Vc = round(calc_angle(a, c, b), eps)
+        print(f"Angle A: {Va}°")
+        print(f"Angle B: {Vb}°")
+        print(f"Angle C: {Vc}°")
+        print("Angle Classification:")
+        if Va > 90 or Vb > 90 or Vc > 90:
+            print("OBTUSE")
+        elif Va < 90 and Vb < 90 and Vc < 90:
+            print("ACUTE")
+        else:
+            print("RIGHT")
+        AB = round(math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2), eps)
+        BC = round(math.sqrt((x2 - x3) ** 2 + (y2 - y3) ** 2), eps)
+        CA = round(math.sqrt((x3 - x1) ** 2 + (y3 - y1) ** 2), eps)
+        print(f"Side AB: {AB}")
+        print(f"Side BC: {BC}")
+        print(f"Side CA: {CA}")
+        print("Side Classification:")
+        if AB != BC and BC != CA and CA != AB:
+            print("SCALENE")
+        elif AB == BC and BC == CA and CA == AB:
+            print("EQUILATERAL")
+        else:
+            print("ISOSCELES")
+    elif cmd == "EPS":
+        eps = int(input("EPSILON(FLOAT PRECISION)>"))
+        print("Epsilon changed succesfully")
     elif cmd == "HELP":
         help_str = f"""{ascii_art}
 A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1819,6 +1870,8 @@ Note that commands are case-sensitive.
  - LOG2: Calculate the base 2 logarithm of an expression, vector, matrix, or number
  - LOG10: Calculate the base 10 logarithm of an expression, vector, matrix, or number
  - ATAN2: Calculate the 4 quadrant arc tangent of an expression, vector, matrix, or number
+ - TRI: Calculate the angles and sides of a triangle given 3 points
+ - EPS: Change the floating point precision(only TRI is currently affected by this)
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
