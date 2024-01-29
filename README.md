@@ -73,6 +73,8 @@ Note that commands are case-sensitive.
  - ```LOG2```: Calculate the base 2 logarithm of an expression, vector, matrix, or number
  - ```LOG10```: Calculate the base 10 logarithm of an expression, vector, matrix, or number
  - ```ATAN2```: Calculate the 4 quadrant arc tangent of an expression, vector, matrix, or number
+ - ```TRI```: Calculate the angles and sides of a triangle given 3 points
+ - ```EPS```: Change the floating point precision(only TRI is currently affected by this)
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
