@@ -596,7 +596,7 @@ def integrate(expression):
 
 def scale_vector(scalar, vector):
     global ans, ans_alt
-    ans = str(list(map(lambda x: x * scalar, vector)))
+    ans = list(map(lambda x: x * scalar, vector))
     return ans
 
 
@@ -792,59 +792,64 @@ while True:
         derivative(equation)
     elif cmd == "SCALE":
         vector = input("VECTOR>")
-        vector = list(map(int, vector.strip('][').split(', ')))
-        scalar = int(input("SCALAR>"))
-        print(scale_vector(scalar, vector))
+        vector = list(map(float, vector.strip('][').split(', ')))
+        scalar = float(input("SCALAR>"))
+        ans = str([round(float(i), eps) for i in scale_vector(scalar, vector)])
+        print(ans)
     elif cmd == "DOTPR":
         vectorA = input("VECTOR A>")
         vectorA = list(map(float, vectorA.strip('][').split(', ')))
 
         vectorB = input("VECTOR B>")
         vectorB = list(map(float, vectorB.strip('][').split(', ')))
-
-        print(dot_product(vectorA, vectorB))
+        ans = round(dot_product(vectorA, vectorB), eps)
+        print(ans)
     elif cmd == "ADDVEC":
         vectorA = input("VECTOR A>")
         vectorA = list(map(float, vectorA.strip('][').split(', ')))
 
         vectorB = input("VECTOR B>")
         vectorB = list(map(float, vectorB.strip('][').split(', ')))
-        ans = str(blas.saxpy(vectorA, vectorB))
-        print(blas.saxpy(vectorA, vectorB))
+        ans = str([round(i, eps) for i in blas.saxpy(vectorA, vectorB)])
+        print(ans)
     elif cmd == "EIGVAL":
         matrix = input("Matrix>")
         matrix = matrix_parse(matrix)
         eigenvalues = lapack.sgeev(matrix)
-        ans = str(eigenvalues)
+        print(type(eigenvalues[0]))
+        ans = str([round(i, eps) for i in eigenvalues[0]])
         print("EIGENVALUES:")
-        for eigenvalue in eigenvalues:
-            print(eigenvalue)
+        for eigenvalue in eigenvalues[0]:
+            print(round(eigenvalue, eps))
     elif cmd == "T":
         matrix = input("Matrix>")
         matrix = matrix_parse(matrix)
         matrix = transpose(matrix)
+        ans = format_mat(matrix)
         pretty_print_matrix(matrix)
     elif cmd == "FFT":
         signal = input("SIGNAL(AS VECTOR)>")
         signal = list(map(int, signal.strip('][').split(', ')))
-        print(fft(signal))
+        ans = fft(signal)
+        print(ans)
     elif cmd == "IFFT":
         signal = input("SIGNAL(AS VECTOR)>")
         signal = list(map(complex, signal.strip('][').split(', ')))
-        print(ifft(signal))
+        ans = ifft(signal)
+        print(ans)
     elif cmd == "INTEGRATE":
         expression = input("EXPRESSION TO INTEGRATE>")
         integrate(expression)
     elif cmd == "SUM":
         vector = input("VECTOR>")
         vector = list(map(int, vector.strip('][').split(', ')))
-        ans = sum(vector)
-        print(sum(vector))
+        ans = round(sum(vector), eps)
+        print(ans)
     elif cmd == "AVG":
         vector = input("VECTOR>")
         vector = list(map(int, vector.strip('][').split(', ')))
-        ans = sum(vector) / len(vector)
-        print(sum(vector) / len(vector))
+        ans = round(sum(vector) / len(vector), eps)
+        print(ans)
     elif cmd == "WORD":
         word = input_prim("WORD>")
         df = pd.read_csv('english Dictionary.csv')
@@ -860,148 +865,148 @@ while True:
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = str([
-                cmath.exp(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.exp(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ])
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.exp(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.exp(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.exp(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.exp(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.exp(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.exp(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "SQRT":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = str([
-                cmath.sqrt(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.sqrt(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ])
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.sqrt(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.sqrt(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.sqrt(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.sqrt(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.sqrt(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.sqrt(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "SIN":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.sin(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.sin(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.sin(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.sin(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.sin(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.sin(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.sin(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.sin(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "COS":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.cos(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.cos(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.cos(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.cos(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.cos(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.cos(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.cos(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.cos(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "TAN":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.tan(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.tan(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.tan(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.tan(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.tan(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.tan(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.tan(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.tan(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "ATAN":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.atan(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.atan(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.atan(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.atan(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.atan(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.atan(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.atan(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.atan(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "ASIN":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.asin(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.asin(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.asin(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.asin(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.asin(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.asin(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.asin(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.asin(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "ACOS":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.acos(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.acos(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.acos(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.acos(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.acos(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.acos(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.acos(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.acos(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "LOG":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.log(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.log(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.log(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.log(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.log(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.log(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.log(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.log(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "ABS":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
-            ans = [abs(eval_(ast.parse(i, mode='eval').body)) for i in expression]
+            ans = [round(abs(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[abs(i) for i in j] for j in expression])
-            pretty_print_matrix([[abs(i) for i in j] for j in expression])
+            ans = format_mat([[round(abs(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(abs(i), eps) for i in j] for j in expression])
         else:
-            ans = abs(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(abs(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "DETR":
         matrix = input("MATRIX>")
@@ -1009,6 +1014,7 @@ while True:
         if verify_square(matrix):
             if len(matrix) == 2:
                 determinant = matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]
+                determinant = round(determinant, eps)
                 ans = determinant
                 print(determinant)
             elif len(matrix) == 3:
@@ -1016,6 +1022,7 @@ while True:
                 determinant = matrix[0][0] * matrix[1][1] * matrix[2][2] + matrix[0][1] * matrix[1][2] * matrix[2][0] + \
                               matrix[0][2] * matrix[1][0] * matrix[2][1] - matrix[0][2] * matrix[1][1] * matrix[2][0] - \
                               matrix[0][1] * matrix[1][0] * matrix[2][2] - matrix[0][0] * matrix[1][2] * matrix[2][1]
+                determinant = round(determinant, eps)
                 ans = determinant
                 print(determinant)
             else:
@@ -1046,7 +1053,7 @@ while True:
         pretty_print_matrix(id_matrix)
     elif cmd == "EVAL":
         expression = input("EXPRESSION>")
-        ans = eval_(ast.parse(expression, mode='eval').body)
+        ans = round(eval_(ast.parse(expression, mode='eval').body), eps)
         print(ans)
     elif cmd == "PROD":
         vector = input("VECTOR>")
@@ -1054,6 +1061,7 @@ while True:
         prod = vector[0]
         for element in vector[1:]:
             prod = prod * element
+        prod = round(prod, eps)
         ans = prod
         print(prod)
     elif cmd == "ELEMENT":
@@ -1086,6 +1094,8 @@ while True:
         matrix = matrix_parse(matrix)
         LU, PIV, _ = lapack.sgetrf(matrix)
         inv_a = lapack.sgetri(LU, PIV)
+        inv_a = inv_a[0].tolist()
+        inv_a = [[round(j, eps) for j in i] for i in inv_a]
         ans = format_mat(inv_a)
         pretty_print_matrix(inv_a)
     elif cmd == "SINH":
@@ -1093,77 +1103,77 @@ while True:
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.sinh(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.sinh(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.sinh(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.sinh(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.sinh(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.sinh(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.sinh(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.sinh(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "COSH":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.cosh(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.cosh(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.cosh(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.cosh(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.cosh(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.cosh(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.cosh(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.cosh(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "TANH":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.tanh(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(cmath.tanh(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.tanh(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.tanh(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.tanh(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.tanh(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.tanh(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.tanh(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "ATANH":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.atanh(eval_(ast.parse(i, mode='eval').body))
+                round(cmath.atanh(eval_(ast.parse(i, mode='eval').body)), eps)
                 for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.atanh(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.atanh(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.atanh(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.atanh(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.atanh(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.atanh(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "ASINH":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.asinh(eval_(ast.parse(i, mode='eval').body))
+                round(cmath.asinh(eval_(ast.parse(i, mode='eval').body)), eps)
                 for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.asinh(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.asinh(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.asinh(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.asinh(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.asinh(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.asinh(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "ACOSH":
 
@@ -1171,80 +1181,80 @@ while True:
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                cmath.acosh(eval_(ast.parse(i, mode='eval').body))
+                round(cmath.acosh(eval_(ast.parse(i, mode='eval').body)), eps)
                 for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[cmath.acosh(i) for i in j] for j in expression])
-            pretty_print_matrix([[cmath.acosh(i) for i in j] for j in expression])
+            ans = format_mat([[round(cmath.acosh(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(cmath.acosh(i), eps) for i in j] for j in expression])
         else:
-            ans = cmath.acosh(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(cmath.acosh(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "SEC":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                1 / cmath.cos(eval_(ast.parse(i, mode='eval').body))
+                round(1 / cmath.cos(eval_(ast.parse(i, mode='eval').body)), eps)
                 for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[1 / cmath.cos(i) for i in j] for j in expression])
-            pretty_print_matrix([[1 / cmath.cos(i) for i in j] for j in expression])
+            ans = format_mat([[round(1 / cmath.cos(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(1 / cmath.cos(i), eps) for i in j] for j in expression])
         else:
-            ans = 1 / cmath.cos(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(1 / cmath.cos(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "SECH":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                1 / cmath.cosh(eval_(ast.parse(i, mode='eval').body))
+                round(1 / cmath.cosh(eval_(ast.parse(i, mode='eval').body)), eps)
                 for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[1 / cmath.cosh(i) for i in j] for j in expression])
-            pretty_print_matrix([[1 / cmath.cosh(i) for i in j] for j in expression])
+            ans = format_mat([[round(1 / cmath.cosh(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(1 / cmath.cosh(i), eps) for i in j] for j in expression])
         else:
-            ans = 1 / cmath.cosh(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(1 / cmath.cosh(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "CSC":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                1 / cmath.sin(eval_(ast.parse(i, mode='eval').body))
+                round(1 / cmath.sin(eval_(ast.parse(i, mode='eval').body)), eps)
                 for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[1 / cmath.sin(i) for i in j] for j in expression])
-            pretty_print_matrix([[1 / cmath.sin(i) for i in j] for j in expression])
+            ans = format_mat([[round(1 / cmath.sin(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(1 / cmath.sin(i), eps) for i in j] for j in expression])
         else:
-            ans = 1 / cmath.sin(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(1 / cmath.sin(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "CSCH":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                1 / cmath.sinh(eval_(ast.parse(i, mode='eval').body))
+                round(1 / cmath.sinh(eval_(ast.parse(i, mode='eval').body)), eps)
                 for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[1 / cmath.sinh(i) for i in j] for j in expression])
-            pretty_print_matrix([[1 / cmath.sinh(i) for i in j] for j in expression])
+            ans = format_mat([[round(1 / cmath.sinh(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(1 / cmath.sinh(i), eps) for i in j] for j in expression])
         else:
-            ans = 1 / cmath.sinh(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(1 / cmath.sinh(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "NORM":
         # Euclidean Normalization
@@ -1252,12 +1262,12 @@ while True:
         if mode == "1":
             vector = input("VECTOR>").strip('][').split(', ')
             vector = [abs(eval_(ast.parse(i, mode='eval').body)) for i in vector]
-            ans = sum(vector)
+            ans = round(sum(vector), eps)
             print(ans)
         elif mode == "INFINITY":
             vector = input("VECTOR>").strip('][').split(', ')
             vector = [abs(eval_(ast.parse(i, mode='eval').body)) for i in vector]
-            ans = max(vector)
+            ans = round(max(vector), eps)
             print(ans)
         elif mode == "2":
             vector = input("VECTOR>").strip('][').split(', ')
@@ -1265,7 +1275,7 @@ while True:
             radicand = 0
             for j in vector:
                 radicand += j ** 2
-            ans = math.sqrt(radicand)
+            ans = round(math.sqrt(radicand), eps)
             print(ans)
     elif cmd == "MXV":
         matrix = input("MATRIX>")
@@ -1274,6 +1284,7 @@ while True:
         vector = vector.strip('][').split(', ')
         vector = [eval_(ast.parse(i, mode='eval').body) for i in vector]
         nvec = blas.sgemv(1, matrix, vector)
+        nvec = [round(i, eps) for i in nvec]
         ans = str(nvec)
         print(f"RESULT: {ans}")
     elif cmd == "ONES":
@@ -1293,7 +1304,7 @@ while True:
         m = int(input("M>"))
         l1 = int(input("FLOOR>"))
         l2 = int(input("CEILING>"))
-        mat = [[random.randint(l1, l2) for i in range(m)] for j in range(n)]
+        mat = [[round(random.randint(l1, l2), eps) for i in range(m)] for j in range(n)]
         ans = format_mat(mat)
         pretty_print_matrix(mat)
     elif cmd == "UTRI":
@@ -1317,16 +1328,16 @@ while True:
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                math.factorial(eval_(ast.parse(i, mode='eval').body))
+                round(math.factorial(eval_(ast.parse(i, mode='eval').body)), eps)
                 for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[math.factorial(i) for i in j] for j in expression])
-            pretty_print_matrix([[math.factorial(i) for i in j] for j in expression])
+            ans = format_mat([[round(math.factorial(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(math.factorial(i), eps) for i in j] for j in expression])
         else:
-            ans = math.factorial(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(math.factorial(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "RAT":
         num = input("DECIMAL TO BE RATIONALIZED>")
@@ -1359,7 +1370,7 @@ while True:
             y1 = float(input("Y1>"))
             x2 = float(input("X2>"))
             y2 = float(input("Y2>"))
-            ans = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+            ans = round(math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2), eps)
             print(ans)
         elif dims == "3":
             x1 = float(input("X1>"))
@@ -1368,7 +1379,7 @@ while True:
             x2 = float(input("X2>"))
             y2 = float(input("Y2>"))
             z2 = float(input("Z2>"))
-            ans = math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
+            ans = round(math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2), eps)
             print(ans)
         else:
             print("ERROR: DIMS NOT VALID")
@@ -1386,8 +1397,8 @@ while True:
                 dist += math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
                 x1 = x2
                 y1 = y2
-            ans = str(dist)
-            print("Dist:" + str(dist))
+            ans = str(round(dist, eps))
+            print("Dist:" + str(round(dist, eps)))
         elif dims == "3":
             dist = 0
             x1 = float(input("X1>"))
@@ -1400,8 +1411,8 @@ while True:
                 dist += math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2 + (z1 - z2) ** 2)
                 x1 = x2
                 y1 = y2
-            ans = str(dist)
-            print("Dist:" + str(dist))
+            ans = str(round(dist, eps))
+            print("Dist:" + str(round(dist, eps)))
         else:
             print("ERROR: DIMS NOT VALID")
     elif cmd == "TRANS":
@@ -1421,7 +1432,9 @@ while True:
             ans = "["
             for i in range(len(x)):
                 x[i] += trans_x
+                x[i] = round(x[i], eps)
                 y[i] += trans_y
+                y[i] = round(y[i], eps)
                 print(f"({x[i]}, {y[i]})")
                 ans += f"{x[i]}, {y[i]}; "
             ans = ans[:-2] + "]"
@@ -1442,8 +1455,11 @@ while True:
             print("TRANSLATED POINTS:")
             for i in range(len(x)):
                 x[i] += trans_x
+                x[i] = round(x[i], eps)
                 y[i] += trans_y
+                y[i] = round(y[i], eps)
                 z[i] += trans_z
+                z[i] = round(z[i], eps)
                 print(f"({x[i]}, {y[i]}, {z[i]})")
                 ans += f"{x[i]}, {y[i]}, {z[i]}; "
             ans = ans[:-2] + "]"
@@ -1457,8 +1473,8 @@ while True:
         y = float(input("Y>"))
         dist = abs((x_coeff * x) +
                    (y_coeff * y) + const) / math.sqrt((x_coeff ** 2) + (y_coeff ** 2))
-        ans = dist
-        print(f"Distance: {dist}")
+        ans = round(dist, eps)
+        print(f"Distance: {round(dist, eps)}")
     elif cmd == "SYST":
         # Use elimination to solve the equation
         eq1 = input("LINEAR EQUATION 1>")
@@ -1479,10 +1495,10 @@ while True:
         const = const1 + const2
         x = (const * -1) / x_coeff
         y = (-1 * const1_copy - x_coeff1_copy * x) / y_coeff1_copy
-        ans = x
-        ans_alt = y
-        print(f"x = {x}")
-        print(f"y = {y}")
+        ans = round(x, eps)
+        ans_alt = round(y, eps)
+        print(f"x = {round(x, eps)}")
+        print(f"y = {round(y, eps)}")
     elif cmd == "DILA":
         k = float(input("SCALE FACTOR>"))
         px = float(input("PX>"))
@@ -1502,6 +1518,8 @@ while True:
             dy = y[i] - py
             x[i] = px + dx * k
             y[i] = py + dy * k
+            x[i] = round(x[i], eps)
+            y[i] = round(y[i], eps)
             print(f"({x[i]}, {y[i]})")
             ans += f"{x[i]}, {y[i]}; "
         ans = ans[:-2] + "]"
@@ -1564,8 +1582,8 @@ while True:
         LU, PIV, _ = lapack.dgetrf(matrix)
         anorm = lapack.dlange("1", matrix)
         cond = lapack.dgecon(LU, anorm)
-        print(cond[0])
-        ans = cond[0]
+        print(round(cond[0], eps))
+        ans = round(cond[0], eps)
     elif cmd == "FACTOR":
         left, right = parseEq(input("EQUATION>"))
         right_cpy = right.copy()  # Copy the equation to avoid an infinite loop
@@ -1654,7 +1672,7 @@ while True:
             new_sect = []
             for j in i:
                 for row in mat2:
-                    new_sect.extend([item*j for item in row])
+                    new_sect.extend([round(item*j, eps) for item in row])
                 new_mat.append(new_sect)
                 new_sect = []
         ans = format_mat(new_mat)
@@ -1664,15 +1682,15 @@ while True:
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                1/cmath.tan(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(1/cmath.tan(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[1/cmath.tan(i) for i in j] for j in expression])
-            pretty_print_matrix([[1/cmath.tan(i) for i in j] for j in expression])
+            ans = format_mat([[round(1/cmath.tan(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(1/cmath.tan(i), eps) for i in j] for j in expression])
         else:
-            ans = 1/cmath.tan(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(1/cmath.tan(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "LINSP":
         n = int(input("# OF ELEMENTS>"))
@@ -1691,16 +1709,16 @@ while True:
         sums = []
         for i in range(len(vec)+1):
             sums.append(sum(vec[:i]))
-
         ans = sums[1:]
         print(sums[1:])
     elif cmd == "CPROD":
         vec = input("VECTOR>")
         vec = vec.strip('][').split(', ')
-        vec = [int(i) for i in vec]
+        vec = [float(i) for i in vec]
         prods = []
         for i in range(len(vec) + 1):
             prods.append(math.prod(vec[:i]))
+        prods = [round(i, eps) for i in prods]
         ans = prods[1:]
         print(prods[1:])
     elif cmd == "LOG2":
@@ -1708,30 +1726,30 @@ while True:
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                math.log2(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(math.log2(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[math.log2(i) for i in j] for j in expression])
-            pretty_print_matrix([[math.log2(i) for i in j] for j in expression])
+            ans = format_mat([[round(math.log2(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(math.log2(i), eps) for i in j] for j in expression])
         else:
-            ans = math.log2(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(math.log2(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "LOG10":
         expression = input("INPUT>")
         if "[" in expression and not ";" in expression:
             expression = expression.strip('][').split(', ')
             ans = [
-                math.log10(eval_(ast.parse(i, mode='eval').body)) for i in expression
+                round(math.log10(eval_(ast.parse(i, mode='eval').body)), eps) for i in expression
             ]
             print(ans)
         elif "[" in expression and ";" in expression:
             expression = matrix_parse(expression)
-            ans = format_mat([[math.log10(i) for i in j] for j in expression])
-            pretty_print_matrix([[math.log10(i) for i in j] for j in expression])
+            ans = format_mat([[round(math.log10(i), eps) for i in j] for j in expression])
+            pretty_print_matrix([[round(math.log10(i), eps) for i in j] for j in expression])
         else:
-            ans = math.log10(eval_(ast.parse(expression, mode='eval').body))
+            ans = round(math.log10(eval_(ast.parse(expression, mode='eval').body)), eps)
             print(ans)
     elif cmd == "ATAN2":
         y = input("Y>")
@@ -1740,16 +1758,16 @@ while True:
             y = y.strip('][').split(', ')
             x = x.strip('][').split(', ')
             ans = [
-                math.atan2(eval_(ast.parse(i, mode='eval').body), eval_(ast.parse(j, mode='eval').body)) for i, j in zip(y, x)
+                round(math.atan2(eval_(ast.parse(i, mode='eval').body), eval_(ast.parse(j, mode='eval').body)), eps) for i, j in zip(y, x)
             ]
             print(ans)
         elif "[" in y and ";" in y:
             y = matrix_parse(y)
             x = matrix_parse(x)
-            ans = format_mat([[math.atan2(i, j) for i, j in zip(k, l)] for k, l in zip(y, x)])
-            pretty_print_matrix([[math.atan2(i, j) for i, j in zip(k, l)] for k, l in zip(y, x)])
+            ans = format_mat([[round(math.atan2(i, j), eps) for i, j in zip(k, l)] for k, l in zip(y, x)])
+            pretty_print_matrix([[round(math.atan2(i, j), eps) for i, j in zip(k, l)] for k, l in zip(y, x)])
         else:
-            ans = math.atan2(eval_(ast.parse(y, mode='eval').body), eval_(ast.parse(x, mode='eval').body))
+            ans = round(math.atan2(eval_(ast.parse(y, mode='eval').body), eval_(ast.parse(x, mode='eval').body)), eps)
             print(ans)
     elif cmd == "TRI":
         print("Point A")
