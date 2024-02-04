@@ -218,12 +218,60 @@ def simpStdForm(equation):
     return (x_coeff, y_coeff, const)
 
 
-def parseEq(eq):
+def parseEq(eq, eq_type):
     eq = eq.replace(" ", "")  # Remove whitespace
-    if "=" in eq:
+    if eq_type == "=":
         # Equation mode
         right, left = eq.split(
             "=")  # Split string into left and right sides of the equal sign
+        # Seperate terms on each side of the equation
+        left = " ".join(left.split("+"))
+        left = left.replace("-", " -")
+        right = " ".join(right.split("+"))
+        right = right.replace("-", " -")
+        right = right.split()
+        left = left.split()
+        return simplifyTerms(right), simplifyTerms(left)
+    elif eq_type == ">":
+        # Inequality mode
+        right, left = eq.split(
+            ">")  # Split string into left and right sides of the equal sign
+        # Seperate terms on each side of the equation
+        left = " ".join(left.split("+"))
+        left = left.replace("-", " -")
+        right = " ".join(right.split("+"))
+        right = right.replace("-", " -")
+        right = right.split()
+        left = left.split()
+        return simplifyTerms(right), simplifyTerms(left)
+    elif eq_type == "<":
+        # Inequality mode
+        right, left = eq.split(
+            "<")  # Split string into left and right sides of the equal sign
+        # Seperate terms on each side of the equation
+        left = " ".join(left.split("+"))
+        left = left.replace("-", " -")
+        right = " ".join(right.split("+"))
+        right = right.replace("-", " -")
+        right = right.split()
+        left = left.split()
+        return simplifyTerms(right), simplifyTerms(left)
+    elif eq_type == "≥":
+        # Inequality mode
+        right, left = eq.split(
+            "≥")  # Split string into left and right sides of the equal sign
+        # Seperate terms on each side of the equation
+        left = " ".join(left.split("+"))
+        left = left.replace("-", " -")
+        right = " ".join(right.split("+"))
+        right = right.replace("-", " -")
+        right = right.split()
+        left = left.split()
+        return simplifyTerms(right), simplifyTerms(left)
+    elif eq_type == "≤":
+        # Inequality mode
+        right, left = eq.split(
+            "≤")  # Split string into left and right sides of the equal sign
         # Seperate terms on each side of the equation
         left = " ".join(left.split("+"))
         left = left.replace("-", " -")
@@ -271,11 +319,20 @@ def exponential_solver(y, b, a=1, h=0, k=0):
 
 def solve(equation):
     global ans, ans_alt
+    eq_type = "="
+    if ">" in equation:
+        eq_type = ">"
+    elif "<" in equation:
+        eq_type = "<"
+    elif "≥" in equation:
+        eq_type = "≥"
+    elif "≤" in equation:
+        eq_type = "≤"
     if "x**3" in equation or "x^3" in equation:
         print("Cannot solve polynomials with a degree above 2")
         return 0
     if ("x**2" in equation) or ("x^2" in equation):
-        left, right = parseEq(equation)
+        left, right = parseEq(equation, eq_type)
         right_cpy = right.copy()  # Copy the equation to avoid an infinite loop
         # Move terms to left side of the equal sign
         if right[0] is not None:
@@ -320,24 +377,23 @@ def solve(equation):
         c = float(left[1])
         x_1, x_2 = quadratic_formula(a, b, c)  # Plug into the quadratic formula
         if x_1 == x_2:
-            print(f"x = {x_1}")
+            print(f"x {eq_type} {x_1}")
             ans = x_1
         else:
             ans = x_1
             ans_alt = x_2
-            print(f"x = {x_1}")
-            print(f"x = {x_2}")
+            print(f"x {eq_type} {x_1}")
+            print(f"x {eq_type} {x_2}")
     elif re.findall(pattern, equation) != []:
         print("Exponential detected")
-        left, right = parseEq(equation)
+        left, right = parseEq(equation, eq_type)
         ans = exponential_solver(float(left[1]), right[5], right[4], right[6],
                                  right[7])
         print(
-            exponential_solver(float(left[1]), right[5], right[4], right[6],
-                               right[7]))
+            f"x {eq_type} {exponential_solver(float(left[1]), right[5], right[4], right[6], right[7])}")
         print("n ∈ ℤ(ℤ is the set of integers)")
     else:
-        left, right = parseEq(equation)
+        left, right = parseEq(equation, eq_type)
         # Goal: Get X on one side and the consts on the other side, then divide the coefficient by the constant
         if right[0] != None:
             # Isolate x on the left side of the equation
@@ -360,9 +416,18 @@ def solve(equation):
                 left.append("-" + str(left[1]))
         left, right = simplifyTerms(left), simplifyTerms(right)
         x_coeff = float(left[0].replace("x", ""))
+        if eq_type != "=" and x_coeff < 0:
+            if eq_type == ">":
+                eq_type = "<"
+            elif eq_type == "<":
+                eq_type = ">"
+            elif eq_type == "≥":
+                eq_type = "≤"
+            elif eq_type == "≤":
+                eq_type = "≥"
         const = float(right[1])
         ans = const / x_coeff
-        print(ans)
+        print(f"x {eq_type} {const / x_coeff}")
 
 
 def derivative(expression):
