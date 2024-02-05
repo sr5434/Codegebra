@@ -23,6 +23,7 @@ pattern = r'-?[0-9.]+\s*=\s*(?:[0-9.]+\s*\*\s*)?[0-9.]+\^\(x-[0-9.]+\)(?:\s*\+\s
 ans = ""
 ans_alt = ""
 input_prim = input  # move native input function so we can modify
+round_prim = round # move native round function so we can modify
 eps = 12 #Machine epsilon
 
 def input(prompt):
@@ -37,6 +38,11 @@ def input(prompt):
     inp = inp.replace("ANS", ans)
     return inp
 
+def round(n, eps):
+    if type(n) == float or type(n) == int:
+        return round_prim(n, eps)
+    elif type(n) == complex:
+        return round_prim(n.real, eps) + round_prim(n.imag, eps) * 1j
 
 def gcd(a, b):
     if (a < b):
