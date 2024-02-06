@@ -1883,6 +1883,18 @@ while True:
     elif cmd == "EPS":
         eps = int(input("EPSILON(FLOAT PRECISION)>"))
         print("Epsilon changed succesfully")
+    elif cmd == "CENTR":
+        print("Point A")
+        x1 = float(input("X>"))
+        y1 = float(input("Y>"))
+        print("Point B")
+        x2 = float(input("X>"))
+        y2 = float(input("Y>"))
+        print("Point C")
+        x3 = float(input("X>"))
+        y3 = float(input("Y>"))
+        print("Centroid:")
+        print(f"({round((x1+x2+x3)/3, eps)}, {round((y1+y2+y3)/3, eps)})")
     elif cmd == "HELP":
         help_str = f"""{ascii_art}
 A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1961,6 +1973,7 @@ Note that commands are case-sensitive.
  - ATAN2: Calculate the 4 quadrant arc tangent of an expression, vector, matrix, or number
  - TRI: Calculate the angles and sides of a triangle given 3 points
  - EPS: Change the floating point precision(only TRI is currently affected by this)
+ - CENTR: Calculate the centroid of a triangle
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
