@@ -224,7 +224,7 @@ def simpStdForm(equation):
     return (x_coeff, y_coeff, const)
 
 
-def parseEq(eq, eq_type):
+def parseEq(eq, eq_type="="):
     eq = eq.replace(" ", "")  # Remove whitespace
     if eq_type == "=":
         # Equation mode
@@ -439,7 +439,7 @@ def solve(equation):
 def derivative(expression):
     global ans, ans_alt
     og_expression = expression
-    expression = parseEq(expression)
+    expression = parseEq(expression, "EXP")
     new_expression = []
     for term in expression:
         if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
@@ -549,7 +549,7 @@ def derivative(expression):
 def integrate(expression):
     global ans, ans_alt
     og_expression = expression
-    expression = parseEq(expression)
+    expression = parseEq(expression, "exp")
     new_expression = []
     for term in expression:
         if re.findall(r'(\d+(\*?))?x\^(\d+)', term):
@@ -1656,85 +1656,93 @@ while True:
         print(round(cond[0], eps))
         ans = round(cond[0], eps)
     elif cmd == "FACTOR":
-        left, right = parseEq(input("EQUATION>"))
-        right_cpy = right.copy()  # Copy the equation to avoid an infinite loop
-        # Move terms to left side of the equal sign
-        if right[0] is not None:
-            if "-" in right[0]:
-                # Add to both sides
-                right.append(right[0][1:])
-                left.append(right[0][1:])
-            else:
-                # Subtract from both sides
-                right.append("-" + str(right[0]))
-                left.append("-" + str(right[0]))
-        if right[1] != None:
-            if "-" in right[1]:
-                # Add to both sides
-                right.append(right[1][1:])
-                left.append(right[1][1:])
-            else:
-                # Subtract from both sides
-                right.append("-" + str(right[1]))
-                left.append("-" + str(right[1]))
-        if right[3] != None:
-            if "-" in right[3]:
-                print(right[3])
-                # Add to both sides
-                right.append(right[3][1:] + "x^2")
-                left.append(right[3][1:] + "x^2")
-            else:
-                # Subtract from both sides
-                right.append("-" + str(right[3]) + "x^2")
-                left.append("-" + str(right[3]) + "x^2")
-        right, left = simplifyTerms(right), simplifyTerms(left)
-        # Extract A, B, and C
-        left[3] = left[3].replace("x^2", "")
-        if left[3] == "":
-            a = 1
-        else:
-            a = float(left[3].replace("x^2", ""))
-        if left[0] == None:
-            b = 0
-        else:
-            b = float(left[0].replace("x", ""))
-        c = float(left[1])
-        x1 = 0.5 * (b - math.sqrt((b ** 2) - 4 * (a * c)))
-        x2 = 0.5 * (math.sqrt((b ** 2) - 4 * a * c) + b)
-        if a == 1:
-            if x1 < 0:
-                t1 = f"(x-{x1 * -1})"
-            elif x1 > 0:
-                t1 = f"(x+{x1})"
-            else:
-                t1 = "x"
-            if x2 < 0:
-                t2 = f"(x-{x2 * -1})"
-            elif x2 > 0:
-                t2 = f"(x+{x2})"
-            else:
-                t2 = "*x"
-            ans = t1 + t2 + "=0"
-            print(t1 + t2 + "=0")
-        else:
-            gcd1 = gcd(a, x1)
-            gcd2 = gcd(x2, c)
-            expr = f"({gcd1 if gcd1 != 1 else ''}x"
-            if gcd2 < 0:
-                expr += str(gcd2)
-            elif gcd2 > 0:
-                expr += f"+{gcd2}"
-            expr += ")("
-            if a / gcd1 != 0:
-                expr += str(a / gcd1)
-            expr += "x"
-            if c / gcd2 < 0:
-                expr += str(c / gcd2)
-            elif c / gcd2 > 0:
-                expr += f"+{c / gcd2}"
-            expr += ")"
-            ans = expr + "=0"
-            print(expr + "=0")
+            try:
+                left, right = parseEq(input("EQUATION>"))
+                right_cpy = right.copy()  # Copy the equation to avoid an infinite loop
+                # Move terms to left side of the equal sign
+                if right[0] is not None:
+                    if "-" in right[0]:
+                        # Add to both sides
+                        right.append(right[0][1:])
+                        left.append(right[0][1:])
+                    else:
+                        # Subtract from both sides
+                        right.append("-" + str(right[0]))
+                        left.append("-" + str(right[0]))
+                if right[1] != None:
+                    if "-" in right[1]:
+                        # Add to both sides
+                        right.append(right[1][1:])
+                        left.append(right[1][1:])
+                    else:
+                        # Subtract from both sides
+                        right.append("-" + str(right[1]))
+                        left.append("-" + str(right[1]))
+                if right[3] != None:
+                    if "-" in right[3]:
+                        print(right[3])
+                        # Add to both sides
+                        right.append(right[3][1:] + "x^2")
+                        left.append(right[3][1:] + "x^2")
+                    else:
+                        # Subtract from both sides
+                        right.append("-" + str(right[3]) + "x^2")
+                        left.append("-" + str(right[3]) + "x^2")
+                right, left = simplifyTerms(right), simplifyTerms(left)
+                # Extract A, B, and C
+                left[3] = left[3].replace("x^2", "")
+                if left[3] == "":
+                    a = 1
+                else:
+                    a = float(left[3].replace("x^2", ""))
+                if left[0] == None:
+                    b = 0
+                else:
+                    b = float(left[0].replace("x", ""))
+                c = float(left[1])
+                discriminant1 = (b ** 2) - 4 * (a * c)
+                discriminant2 = (b ** 2) - 4 * a * c
+                if discriminant1 < 0 or discriminant2 < 0:
+                    print("CANNOT CALCULATE SQUARE ROOT OF NEGATIVE NUMBER")
+                else:
+                    x1 = 0.5 * (b - math.sqrt(discriminant1))
+                    x2 = 0.5 * (math.sqrt(discriminant2) + b)
+                    if a == 1:
+                        if x1 < 0:
+                            t1 = f"(x-{x1 * -1})"
+                        elif x1 > 0:
+                            t1 = f"(x+{x1})"
+                        else:
+                            t1 = "x"
+                        if x2 < 0:
+                            t2 = f"(x-{x2 * -1})"
+                        elif x2 > 0:
+                            t2 = f"(x+{x2})"
+                        else:
+                            t2 = "*x"
+                        ans = t1 + t2 + "=0"
+                        print(t1 + t2 + "=0")
+                    elif a != 0:
+                        gcd1 = gcd(a, x1)
+                        gcd2 = gcd(x2, c)
+                        expr = f"({gcd1 if gcd1 != 1 else ''}x"
+                        if gcd2 < 0:
+                            expr += str(gcd2)
+                        elif gcd2 > 0:
+                            expr += f"+{gcd2}"
+                        expr += ")("
+                        if a / gcd1 != 0:
+                            expr += str(a / gcd1)
+                        expr += "x"
+                        if c / gcd2 < 0:
+                            expr += str(c / gcd2)
+                        elif c / gcd2 > 0:
+                            expr += f"+{c / gcd2}"
+                        expr += ")"
+                        ans = expr + "=0"
+                        print(expr + "=0")
+            except:
+                print("ERROR: MUST BE VALID QUADRATIC EQUATION")
     elif cmd == "KRON":
         mat1 = matrix_parse(input("MATRIX A>"))
         mat2 = matrix_parse(input("MATRIX B>"))
