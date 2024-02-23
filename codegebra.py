@@ -411,6 +411,7 @@ def solve(equation):
                 # Subtract from both sides
                 right.append("-" + str(right[0]))
                 left.append("-" + str(right[0]))
+        if right[1] != None:
             # Isolate the constants on the right side
             if "-" in left[1]:
                 # Add to both sides
