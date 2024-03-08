@@ -422,7 +422,10 @@ def solve(equation):
                 right.append("-" + str(left[1]))
                 left.append("-" + str(left[1]))
         left, right = simplifyTerms(left), simplifyTerms(right)
-        x_coeff = float(left[0].replace("x", ""))
+        if left[0] == "x":
+            x_coeff = 1
+        else:
+            x_coeff = float(left[0].replace("x", ""))
         if eq_type != "=" and x_coeff < 0:
             if eq_type == ">":
                 eq_type = "<"
