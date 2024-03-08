@@ -1907,6 +1907,10 @@ while True:
         y3 = float(input("Y>"))
         print("Centroid:")
         print(f"({round((x1+x2+x3)/3, eps)}, {round((y1+y2+y3)/3, eps)})")
+    elif cmd == "INTANG":
+        sides = input("Sides>")
+        angle = (180*(sides-2))/sides
+        print(f"Each angle measures {angle}°")
     elif cmd == "HELP":
         help_str = f"""{ascii_art}
 A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1986,6 +1990,7 @@ Note that commands are case-sensitive.
  - TRI: Calculate the angles and sides of a triangle given 3 points
  - EPS: Change the floating point precision(only TRI is currently affected by this)
  - CENTR: Calculate the centroid of a triangle
+ - INTANG: Calculate the measure of an interior angle in a regular polygon
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
