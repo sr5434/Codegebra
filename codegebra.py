@@ -1911,6 +1911,30 @@ while True:
         sides = input("Sides>")
         angle = (180*(sides-2))/sides
         print(f"Each angle measures {angle}°")
+    elif cmd == "EXPA":
+        expression = input("Factored expression>")
+        if re.match("\(([0-9]+)?x[+|-][0-9]+\)\(([0-9]+)?x[+|-][0-9]+\)", expression):
+            term1 = expression.split(")(")[0][1::].split("x")
+            term2 = expression.split(")(")[1][:-1].split("x")
+            x_coeff1 = 1 if term1[0] == '' else int(term1[0])
+            const1 = int(term1[1])
+            x_coeff2 = 1 if term2[0] == '' else int(term2[0])
+            const2 = int(term2[1])
+            a = x_coeff1*x_coeff2
+            b = x_coeff1*const2+x_coeff2*const1
+            c = const1*const2
+            new_expr = f"{a}x^2{'+' + str(b) if b == abs(b) else str(b)}x{'+' + str(c) if c == abs(c) else str(c)}=0"
+            ans = new_expr
+            print(new_expr)
+        elif re.match("\(([0-9]+)?x[+|-][0-9]+\)\^2", expression):
+            expression = expression[1:-3].split("x")
+            a = 1 if expression[0] == '' else int(expression[0])
+            b = int(expression[1])
+            new_expr = f"{a**2}x^2{2*a*b if a*b == abs(a*b) else '+' + str(a*b)}x{b**2 if b == abs(b) else '+' + int(b**2)}=0"
+            ans = new_expr
+            print(new_expr)
+        else:
+            print("ERROR: Improperly formatted expression")
     elif cmd == "HELP":
         help_str = f"""{ascii_art}
 A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1991,6 +2015,7 @@ Note that commands are case-sensitive.
  - EPS: Change the floating point precision(only TRI is currently affected by this)
  - CENTR: Calculate the centroid of a triangle
  - INTANG: Calculate the measure of an interior angle in a regular polygon
+ - EXPA: Expand a factored expression
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]
