@@ -76,7 +76,8 @@ Note that commands are NOT case-sensitive.
  - ```TRI```: Calculate the angles and sides of a triangle given 3 points
  - ```EPS```: Change the floating point precision
  - ```CENTR```: Calculate the centroid of a triangle
- - ```INTANG``````: Calculate the measure of an interior angle in a regular polygon
+ - ```INTANG```: Calculate the measure of an interior angle in a regular polygon
+ - ```EXPA```: Expand a factored expression
 ## Matrices
 Matrices are written in the following format:
 ```[1, 2, 3;4, 5, 6]```
