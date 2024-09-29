@@ -18,7 +18,9 @@ operators = {
     ast.USub: op.neg
 }
 
-pattern = r'-?[0-9.]+\s*=\s*(?:[0-9.]+\s*\*\s*)?[0-9.]+\^\(x-[0-9.]+\)(?:\s*\+\s*[0-9.]+)?'
+#For matching exponentials
+pattern = r'(-?[0-9.]+\s*=\s*(?:-?[0-9.]+\s*\*\s*)?-?[0-9.]+\^\(x[+-][0-9.]+\)(?:\s*[+-]\s*[0-9.]+)?)|(\s*(?:-?[0-9.]+\s*\*\s*)?-?[0-9.]+\^\(x[+-][0-9.]+\)(?:\s*[+-]\s*[0-9.]+)?=-?[0-9.]+\s*)'
+reverse_pattern = r'(\s*(?:-?[0-9.]+\s*\*\s*)?-?[0-9.]+\^\(x[+-][0-9.]+\)(?:\s*[+-]\s*[0-9.]+)?=-?[0-9.]+\s*)'
 
 ans = ""
 ans_alt = ""
@@ -58,7 +60,7 @@ def gcd(a, b):
 def simplifyTerms(terms):
     terms = [
         item for item in terms
-        if item is not None and item is not False and item is not True
+        if item is not None and item not in [True, False]
     ]
     x_coeff = 0  # X coefficient(aka m in y=mx+b)
     x2_coeff = 0  # X^2 coefficient(aka A in ax^2+bx+c=0)
@@ -106,7 +108,6 @@ def simplifyTerms(terms):
             if len(terms) == 1:
                 y = float(term)
             elif re.findall(r'\d+\^\(', term) != []:
-                print(term)
                 term = term.replace("^(", "")
                 term = term.replace("x", "")
                 if len(term.split("*")) == 2:
@@ -224,67 +225,58 @@ def simpStdForm(equation):
     return (x_coeff, y_coeff, const)
 
 
-def parseEq(eq, eq_type="="):
+def parseEq(eq, eq_type="=", is_expo=False):
     eq = eq.replace(" ", "")  # Remove whitespace
-    if eq_type == "=":
-        # Equation mode
+    if eq_type in ["=", "≥", "≤", ">", "<"]:
         right, left = eq.split(
-            "=")  # Split string into left and right sides of the equal sign
+            eq_type)  # Split string into left and right sides of the equal sign
         # Seperate terms on each side of the equation
-        left = " ".join(left.split("+"))
-        left = left.replace("-", " -")
-        right = " ".join(right.split("+"))
-        right = right.replace("-", " -")
+        if is_expo == False:
+            addition_pattern = r'\+(?![^(]*\))'#Don't split if its inside parentheses
+            subtraction_pattern = r'\-(?![^(]*\))'
+        else:
+            # It is ok if we split if it is inside parentheses for exponential equations
+            # Because the exponential solver expects it to be split
+            addition_pattern = r'(?<!\*)\+'
+            subtraction_pattern = r'(?<!\*)\-'
+        # We replace the operators with whitespace so when we split it into an array, we can easily see the barriers
+        # between the terms
+        left = " ".join(re.split(addition_pattern, left))
+        left = re.sub(subtraction_pattern, " -", left)
+        right = " ".join(re.split(addition_pattern, right))
+        right = re.sub(subtraction_pattern, " -", right)
         right = right.split()
         left = left.split()
-        return simplifyTerms(right), simplifyTerms(left)
-    elif eq_type == ">":
-        # Inequality mode
-        right, left = eq.split(
-            ">")  # Split string into left and right sides of the equal sign
-        # Seperate terms on each side of the equation
-        left = " ".join(left.split("+"))
-        left = left.replace("-", " -")
-        right = " ".join(right.split("+"))
-        right = right.replace("-", " -")
-        right = right.split()
-        left = left.split()
-        return simplifyTerms(right), simplifyTerms(left)
-    elif eq_type == "<":
-        # Inequality mode
-        right, left = eq.split(
-            "<")  # Split string into left and right sides of the equal sign
-        # Seperate terms on each side of the equation
-        left = " ".join(left.split("+"))
-        left = left.replace("-", " -")
-        right = " ".join(right.split("+"))
-        right = right.replace("-", " -")
-        right = right.split()
-        left = left.split()
-        return simplifyTerms(right), simplifyTerms(left)
-    elif eq_type == "≥":
-        # Inequality mode
-        right, left = eq.split(
-            "≥")  # Split string into left and right sides of the equal sign
-        # Seperate terms on each side of the equation
-        left = " ".join(left.split("+"))
-        left = left.replace("-", " -")
-        right = " ".join(right.split("+"))
-        right = right.replace("-", " -")
-        right = right.split()
-        left = left.split()
-        return simplifyTerms(right), simplifyTerms(left)
-    elif eq_type == "≤":
-        # Inequality mode
-        right, left = eq.split(
-            "≤")  # Split string into left and right sides of the equal sign
-        # Seperate terms on each side of the equation
-        left = " ".join(left.split("+"))
-        left = left.replace("-", " -")
-        right = " ".join(right.split("+"))
-        right = right.replace("-", " -")
-        right = right.split()
-        left = left.split()
+
+        def distribute_side(side):
+            for i in range(len(side)):
+                term = side[i]
+                if "(" in term:
+                    if re.match(r"-?[0-9]\d*(\.\d+)?\((.*)\)", term):
+                        coeff = term.split("(")[0]
+                        inside = term.split("(")[1][:-1]
+                        inside = " ".join(inside.split("+"))
+                        inside = inside.replace("-", " -")
+                        inside = inside.split()
+                        for j in range(len(inside)):
+                            if "x" in inside[j] and inside[j] != "x":
+                                inside[j] = str(float(coeff) * float(inside[j][:-1]))+"x"
+                            elif "x" == inside[j]:
+                                inside[j] = coeff + "x"
+                            else:
+                                inside[j] = str(float(coeff) * float(inside[j]))
+                        side[i:i + 1] = inside
+                    elif term.split("(")[0][-1] == ")":
+                        inside = side.split("(")[0]
+                        inside = " ".join(inside.split("+"))
+                        inside = inside.replace("-", " -")
+                        inside = inside.split()
+                        side[i:i + 1] = inside
+        if is_expo == False:
+            distribute_side(left)
+            distribute_side(right)
+        #Regularly split: ['4*2^(x', '-2)', '3']( 3=4*2^(x-2)+3 )
+        #When a or b is negative: ['4*', '-2^(x-2)', '3'] ( 3=4*-2^(x-2)+3 )
         return simplifyTerms(right), simplifyTerms(left)
     else:
         # Expression mode
@@ -318,9 +310,21 @@ def quadratic_formula(a, b, c):
     return x_1, x_2
 
 
-def exponential_solver(y, b, a=1, h=0, k=0):
-    numerator = math.log((-1 * a) / (k - y)) - h * math.log(b) + (2 * math.pi)
-    return f"{math.log((-1 * a) / (k - y)) - h * math.log(b) / math.log(b)}+{(2 * math.pi) / math.log(b)}i n"
+def exponential_solver(y, a=1, b=None, h=0, k=0):
+    print(f"y={y}, a={a}, b={b}, h={h}, k={k}")
+    #https://www.wolframalpha.com/input?i=y-k%3Da*b%5E%28x-h%29+solve+for+x
+    imag_solution = None
+    log_b = cmath.log(b)
+    if k != y and a != 0 and log_b != complex(0, 0):
+        if log_b.imag == 0:
+            #If there is not an imaginary component then omit it from outputs
+            log_b = log_b.real
+        numerator = cmath.log(-a / (k - y)) - h * log_b
+        if numerator.imag == 0:
+            numerator = numerator.real
+        #I dont know why this works but it does
+        imag_solution = f"x = -({-numerator if numerator.real != 0 else str(numerator.imag)+"j"} + {2j*math.pi}n) / {-log_b}"
+    return imag_solution
 
 
 def solve(equation):
@@ -391,12 +395,12 @@ def solve(equation):
             print(f"x {eq_type} {x_1}")
             print(f"x {eq_type} {x_2}")
     elif re.findall(pattern, equation) != []:
-        print("Exponential detected")
-        left, right = parseEq(equation, eq_type)
-        ans = exponential_solver(float(left[1]), right[5], right[4], right[6],
-                                 right[7])
-        print(
-            f"x {eq_type} {exponential_solver(float(left[1]), right[5], right[4], right[6], right[7])}")
+        if re.findall(reverse_pattern, equation) != []:
+            equation = equation.split("=")
+            equation = equation[1] + "=" + equation[0]
+        left, right = parseEq(equation, eq_type, is_expo=True)
+        imag_solution = exponential_solver(float(left[1]), right[4], right[5], right[6], right[7])
+        print(f"Imaginary solution: {imag_solution}")
         print("n ∈ ℤ(ℤ is the set of integers)")
     else:
         left, right = parseEq(equation, eq_type)
@@ -857,6 +861,7 @@ print("Created in 2023 by Samir R")
 
 while True:
     cmd = input("COMMAND>")
+    cmd = cmd.upper()
     if cmd == "SOLVE":
         equation = input("EQUATION TO BE SOLVED>")
         solve(equation)
@@ -1911,6 +1916,30 @@ while True:
         sides = input("Sides>")
         angle = (180*(sides-2))/sides
         print(f"Each angle measures {angle}°")
+    elif cmd == "EXPA":
+        expression = input("Factored expression>")
+        if re.match("\(([0-9]+)?x[+|-][0-9]+\)\(([0-9]+)?x[+|-][0-9]+\)", expression):
+            term1 = expression.split(")(")[0][1::].split("x")
+            term2 = expression.split(")(")[1][:-1].split("x")
+            x_coeff1 = 1 if term1[0] == '' else int(term1[0])
+            const1 = int(term1[1])
+            x_coeff2 = 1 if term2[0] == '' else int(term2[0])
+            const2 = int(term2[1])
+            a = x_coeff1*x_coeff2
+            b = x_coeff1*const2+x_coeff2*const1
+            c = const1*const2
+            new_expr = f"{a}x^2{'+' + str(b) if b == abs(b) else str(b)}x{'+' + str(c) if c == abs(c) else str(c)}=0"
+            ans = new_expr
+            print(new_expr)
+        elif re.match("\(([0-9]+)?x[+|-][0-9]+\)\^2", expression):
+            expression = expression[1:-3].split("x")
+            a = 1 if expression[0] == '' else int(expression[0])
+            b = int(expression[1])
+            new_expr = f"{a**2}x^2{2*a*b if a*b == abs(a*b) else '+' + str(a*b)}x{b**2 if b == abs(b) else '+' + int(b**2)}=0"
+            ans = new_expr
+            print(new_expr)
+        else:
+            print("ERROR: Improperly formatted expression")
     elif cmd == "HELP":
         help_str = f"""{ascii_art}
 A "computational intelligence system"(basically a fancy calculator that can also tell you data) that can solve equations, find derivatives, tell you about *some* movies, and more.
@@ -1991,6 +2020,7 @@ Note that commands are case-sensitive.
  - EPS: Change the floating point precision(only TRI is currently affected by this)
  - CENTR: Calculate the centroid of a triangle
  - INTANG: Calculate the measure of an interior angle in a regular polygon
+ - EXPA: Expand a factored expression
 Matrices
 Matrices are written in the following format:
 [1, 2, 3;4, 5, 6]

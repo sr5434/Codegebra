@@ -4,7 +4,7 @@ A math software that can solve equations, find derivatives, and more.
 I created this so that I could learn how systems like Matlab and Mathematica solve equations. However, I continued
 to add more features after reaching my initial goal.
 ## Commands
-Note that commands are case-sensitive.
+Note that commands are NOT case-sensitive.
  - ```SOLVE```: solve linear, quadratic, and exponential equations. Exponential equations must be in simplest for this to work
  - ```DIFF```: Differentiate a function
  - ```SCALE```: Scale a vector
